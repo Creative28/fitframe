@@ -3,34 +3,24 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const PAIRS = [
   {
-    before: {
-      src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=600&fit=crop&crop=center',
-      alt: 'White sweatshirt laid flat on bed',
-    },
-    after: {
-      src: 'https://images.unsplash.com/photo-1581803118522-7b72a50f7e9f?w=500&h=600&fit=crop&crop=top',
-      alt: 'Model wearing white sweatshirt',
-    },
+    before: { src: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400', alt: 'Yellow shirt flat lay' },
+    after: { src: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400', alt: 'Model in yellow top' },
   },
   {
-    before: {
-      src: 'https://images.unsplash.com/photo-1566206091558-7f218b696731?w=500&h=600&fit=crop&crop=center',
-      alt: 'Black dress hanging on door',
-    },
-    after: {
-      src: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=500&h=600&fit=crop&crop=top',
-      alt: 'Model wearing black dress',
-    },
+    before: { src: 'https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?w=400', alt: 'Jeans flat lay' },
+    after: { src: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400', alt: 'Model wearing jeans' },
   },
   {
-    before: {
-      src: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=600&fit=crop&crop=center',
-      alt: 'Blue jeans folded on wooden floor',
-    },
-    after: {
-      src: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop&crop=top',
-      alt: 'Model wearing blue jeans',
-    },
+    before: { src: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400', alt: 'White outfit flat lay' },
+    after: { src: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400', alt: 'Model wearing white outfit' },
+  },
+  {
+    before: { src: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400', alt: 'Black dress on hanger' },
+    after: { src: 'https://images.unsplash.com/photo-1566206091558-7f218b696731?w=400', alt: 'Model in black dress' },
+  },
+  {
+    before: { src: 'https://images.unsplash.com/photo-1570976447640-ac859083963f?w=400', alt: 'Swimsuit flat lay' },
+    after: { src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400', alt: 'Model in swimsuit' },
   },
 ];
 
