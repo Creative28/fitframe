@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight, Upload, Cpu, Download, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import BeforeAfterCarousel from '@/components/landing/BeforeAfterCarousel';
+import MarqueeStrip from '@/components/landing/MarqueeStrip';
+import SocialProof from '@/components/landing/SocialProof';
 
 const PLANS = [
   {
