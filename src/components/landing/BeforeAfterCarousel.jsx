@@ -5,7 +5,7 @@ const PAIRS = [
   {
     label: 'Yellow Shirt',
     before: { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/5961e2c8e_generated_image.png', alt: 'Yellow shirt flat lay' },
-    after:  { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/03e9efcbd_generated_image.png', alt: 'Model wearing yellow shirt' },
+    after:  { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/5e49e4a3e_generated_image.png', alt: 'Model wearing yellow shirt' },
   },
   {
     label: 'Blue Jeans',
