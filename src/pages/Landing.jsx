@@ -40,7 +40,7 @@ export default function Landing() {
     <div className="min-h-screen bg-[#FAFAF8] font-dm">
       {/* Nav */}
       <nav className="px-6 py-4 flex items-center justify-between max-w-5xl mx-auto">
-        <span className="font-playfair text-2xl font-bold text-[#1A1A2E]">FitFrame</span>
+        <span className="font-playfair text-2xl font-bold text-[#1A1A2E]">Just Fit It</span>
         <button
           onClick={() => base44?.auth?.redirectToLogin()}
           className="px-4 py-2 text-sm font-medium text-[#1A1A2E] hover:underline"
@@ -178,7 +178,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="px-6 py-8 border-t border-gray-100 text-center">
-        <span className="font-playfair text-lg font-bold text-[#1A1A2E]">FitFrame</span>
+        <span className="font-playfair text-lg font-bold text-[#1A1A2E]">Just Fit It</span>
         <p className="text-sm text-gray-400 font-dm mt-1">AI fashion studio for sellers</p>
       </footer>
     </div>
