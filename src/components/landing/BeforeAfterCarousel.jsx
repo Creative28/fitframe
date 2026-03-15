@@ -57,7 +57,7 @@ export default function BeforeAfterCarousel() {
               />
             </div>
             <div className="relative">
-              <div className="absolute top-3 left-3 bg-[#E8B86D] text-[#1A1A2E] text-xs px-2.5 py-1 rounded-full font-dm font-semibold z-10">After ✨</div>
+              <div className="absolute top-3 left-3 bg-[#E8B86D] text-[#1A1A2E] text-xs px-2.5 py-1 rounded-full font-dm font-semibold z-10">After ✦</div>
               <img
                 src={pair.after.src}
                 alt={pair.after.alt}
