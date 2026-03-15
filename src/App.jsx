@@ -24,7 +24,7 @@ const AuthenticatedApp = () => {
       <div className="fixed inset-0 flex items-center justify-center bg-[#FAFAF8]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
-          <span className="font-playfair text-xl font-bold text-[#1A1A2E]">FitFrame</span>
+          <span className="font-playfair text-xl font-bold text-[#1A1A2E]">Just Fit It</span>
         </div>
       </div>
     );

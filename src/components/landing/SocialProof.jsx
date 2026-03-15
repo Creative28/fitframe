@@ -36,7 +36,7 @@ export default function SocialProof() {
         </div>
         <p className="text-sm font-dm text-gray-600 leading-snug">
           <span className="font-semibold text-[#1A1A2E]">2,400+</span> boutique owners<br />
-          & resellers already using FitFrame
+          & resellers already using Just Fit It
         </p>
       </div>
 
