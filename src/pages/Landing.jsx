@@ -69,23 +69,28 @@ export default function Landing() {
         </div>
 
         {/* Before/after */}
-        <div className="grid grid-cols-2 gap-4 max-w-xl mx-auto rounded-3xl overflow-hidden shadow-xl">
-          <div className="relative">
-            <div className="absolute top-3 left-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full font-dm">Before</div>
-            <img
-              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=500&fit=crop"
-              alt="Hanger product photo"
-              className="w-full h-64 sm:h-80 object-cover"
-            />
+        <div className="max-w-xl mx-auto">
+          <div className="grid grid-cols-2 gap-4 rounded-3xl overflow-hidden shadow-xl">
+            <div className="relative">
+              <div className="absolute top-3 left-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full font-dm z-10">Before</div>
+              <img
+                src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&h=500&fit=crop&crop=center"
+                alt="White t-shirt on a plain hanger"
+                className="w-full h-64 sm:h-80 object-cover"
+              />
+            </div>
+            <div className="relative">
+              <div className="absolute top-3 left-3 bg-[#E8B86D] text-[#1A1A2E] text-xs px-2.5 py-1 rounded-full font-dm font-semibold z-10">After ✨</div>
+              <img
+                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=500&fit=crop&crop=top"
+                alt="Model wearing the same clothing item professionally"
+                className="w-full h-64 sm:h-80 object-cover"
+              />
+            </div>
           </div>
-          <div className="relative">
-            <div className="absolute top-3 left-3 bg-[#E8B86D] text-[#1A1A2E] text-xs px-2.5 py-1 rounded-full font-dm font-semibold">After ✨</div>
-            <img
-              src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop"
-              alt="Professional model photo"
-              className="w-full h-64 sm:h-80 object-cover"
-            />
-          </div>
+          <p className="text-center text-sm text-gray-400 font-dm mt-3 italic">
+            Real example — generated in 10 seconds
+          </p>
         </div>
       </section>
 
