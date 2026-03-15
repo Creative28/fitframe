@@ -4,28 +4,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 const PAIRS = [
   {
     label: 'Yellow Shirt',
-    before: { src: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&h=600&fit=crop', alt: 'Yellow shirt laid flat' },
+    before: { src: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=600&fit=crop', alt: 'Yellow shirt flat lay' },
     after:  { src: 'https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing yellow shirt' },
   },
   {
     label: 'Blue Jeans',
-    before: { src: 'https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?w=500&h=600&fit=crop', alt: 'Blue jeans flat lay' },
+    before: { src: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=600&fit=crop', alt: 'Blue jeans flat lay' },
     after:  { src: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing blue jeans' },
   },
   {
     label: 'Shirt & Pants Outfit',
-    before: { src: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500&h=600&fit=crop', alt: 'Shirt and pants outfit laid out' },
-    after:  { src: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing shirt and pants' },
+    before: { src: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&h=600&fit=crop', alt: 'Shirt and pants laid out' },
+    after:  { src: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing shirt and pants' },
   },
   {
     label: 'Black Dress',
     before: { src: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&h=600&fit=crop', alt: 'Black dress on hanger' },
-    after:  { src: 'https://images.unsplash.com/photo-1566206091558-7f218b696731?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing black dress' },
+    after:  { src: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing black dress' },
   },
   {
     label: 'Bathing Suit',
     before: { src: 'https://images.unsplash.com/photo-1570976447640-ac859083963f?w=500&h=600&fit=crop', alt: 'Bathing suit flat lay' },
-    after:  { src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing bathing suit' },
+    after:  { src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing bathing suit' },
   },
 ];
 
@@ -47,10 +47,10 @@ export default function BeforeAfterCarousel() {
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
             className="grid grid-cols-2 gap-3 rounded-3xl overflow-hidden shadow-xl"
           >
             <div className="relative">
@@ -58,7 +58,7 @@ export default function BeforeAfterCarousel() {
               <img
                 src={pair.before.src}
                 alt={pair.before.alt}
-                className="w-full h-60 sm:h-72 object-cover"
+                className="w-full h-64 sm:h-80 object-cover"
               />
             </div>
             <div className="relative">
@@ -66,7 +66,7 @@ export default function BeforeAfterCarousel() {
               <img
                 src={pair.after.src}
                 alt={pair.after.alt}
-                className="w-full h-60 sm:h-72 object-cover"
+                className="w-full h-64 sm:h-80 object-cover"
               />
             </div>
           </motion.div>
