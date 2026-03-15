@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight, Upload, Cpu, Download, Check } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 const PLANS = [
   {
@@ -94,10 +95,10 @@ export default function Landing() {
           <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-[#1A1A2E]">How it works</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          {STEPS.map(({ icon: Icon, step, title, desc }) => (
+          {STEPS.map(({ icon: StepIcon, step, title, desc }) => (
             <div key={step} className="flex flex-col items-center text-center gap-4 p-6">
               <div className="w-16 h-16 rounded-2xl bg-[#1A1A2E] flex items-center justify-center">
-                <Icon size={28} className="text-[#E8B86D]" />
+                <StepIcon size={28} className="text-[#E8B86D]" />
               </div>
               <div>
                 <p className="text-xs font-dm font-semibold text-[#E8B86D] tracking-widest mb-1">{step}</p>
