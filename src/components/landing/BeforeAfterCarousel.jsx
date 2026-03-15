@@ -86,9 +86,10 @@ export default function BeforeAfterCarousel() {
         </div>
       </div>
 
-      <p className="text-center text-sm text-gray-400 font-dm mt-3 italic">
-        Real example — generated in 10 seconds
-      </p>
+      <div className="text-center mt-3">
+        <p className="text-xs font-dm font-semibold text-[#E8B86D] tracking-widest uppercase mb-0.5">{pair.label}</p>
+        <p className="text-sm text-gray-400 font-dm italic">Real example — generated in 10 seconds</p>
+      </div>
     </div>
   );
 }
