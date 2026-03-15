@@ -4,28 +4,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 const PAIRS = [
   {
     label: 'Yellow Shirt',
-    before: { src: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=600&fit=crop', alt: 'Yellow shirt flat lay' },
-    after:  { src: 'https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing yellow shirt' },
+    before: { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/5961e2c8e_generated_image.png', alt: 'Yellow shirt flat lay' },
+    after:  { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/03e9efcbd_generated_image.png', alt: 'Model wearing yellow shirt' },
   },
   {
     label: 'Blue Jeans',
-    before: { src: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=600&fit=crop', alt: 'Blue jeans flat lay' },
-    after:  { src: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing blue jeans' },
+    before: { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/ecfee6255_generated_image.png', alt: 'Blue jeans flat lay' },
+    after:  { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/949051cf7_generated_image.png', alt: 'Model wearing blue jeans' },
   },
   {
     label: 'Shirt & Pants Outfit',
-    before: { src: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&h=600&fit=crop', alt: 'Shirt and pants laid out' },
-    after:  { src: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing shirt and pants' },
+    before: { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/93f2a8f32_generated_image.png', alt: 'Shirt and pants laid out' },
+    after:  { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/9f7db745a_generated_image.png', alt: 'Model wearing shirt and pants' },
   },
   {
     label: 'Black Dress',
-    before: { src: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&h=600&fit=crop', alt: 'Black dress on hanger' },
-    after:  { src: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing black dress' },
+    before: { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/c984c9798_generated_image.png', alt: 'Black dress flat lay' },
+    after:  { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/119d11998_generated_image.png', alt: 'Model wearing black dress' },
   },
   {
     label: 'Bathing Suit',
-    before: { src: 'https://images.unsplash.com/photo-1570976447640-ac859083963f?w=500&h=600&fit=crop', alt: 'Bathing suit flat lay' },
-    after:  { src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop&crop=top', alt: 'Model wearing bathing suit' },
+    before: { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/19a827d97_generated_image.png', alt: 'Pink bikini flat lay' },
+    after:  { src: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b7303524165a13c96d4537/67b6e4c96_generated_image.png', alt: 'Model wearing pink bikini' },
   },
 ];
 
