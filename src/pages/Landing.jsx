@@ -68,29 +68,53 @@ export default function Landing() {
           </button>
         </div>
 
-        {/* Before/after */}
-        <div className="max-w-xl mx-auto">
-          <div className="grid grid-cols-2 gap-4 rounded-3xl overflow-hidden shadow-xl">
-            <div className="relative">
-              <div className="absolute top-3 left-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full font-dm z-10">Before</div>
-              <img
-                src="https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&h=500&fit=crop&crop=center"
-                alt="Yellow hoodie flat lay"
-                className="w-full h-64 sm:h-80 object-cover"
-              />
+        {/* Before/after examples */}
+        <div className="max-w-xl mx-auto flex flex-col gap-6">
+          {/* Example 1: White sweatshirt */}
+          <div>
+            <div className="grid grid-cols-2 gap-3 rounded-3xl overflow-hidden shadow-xl">
+              <div className="relative">
+                <div className="absolute top-3 left-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full font-dm z-10">Before</div>
+                <img
+                  src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&h=500&fit=crop&crop=center"
+                  alt="White crew neck sweatshirt flat lay"
+                  className="w-full h-56 sm:h-72 object-cover"
+                />
+              </div>
+              <div className="relative">
+                <div className="absolute top-3 left-3 bg-[#E8B86D] text-[#1A1A2E] text-xs px-2.5 py-1 rounded-full font-dm font-semibold z-10">After ✨</div>
+                <img
+                  src="https://images.unsplash.com/photo-1581803118522-7b72a50f7e9f?w=400&h=500&fit=crop&crop=top"
+                  alt="Model wearing white sweatshirt in studio"
+                  className="w-full h-56 sm:h-72 object-cover"
+                />
+              </div>
             </div>
-            <div className="relative">
-              <div className="absolute top-3 left-3 bg-[#E8B86D] text-[#1A1A2E] text-xs px-2.5 py-1 rounded-full font-dm font-semibold z-10">After ✨</div>
-              <img
-                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=500&fit=crop&crop=top"
-                alt="Model wearing yellow outfit professionally"
-                className="w-full h-64 sm:h-80 object-cover"
-              />
-            </div>
+            <p className="text-center text-sm text-gray-400 font-dm mt-2 italic">Real example — generated in 10 seconds</p>
           </div>
-          <p className="text-center text-sm text-gray-400 font-dm mt-3 italic">
-            Real example — generated in 10 seconds
-          </p>
+
+          {/* Example 2: Black dress */}
+          <div>
+            <div className="grid grid-cols-2 gap-3 rounded-3xl overflow-hidden shadow-xl">
+              <div className="relative">
+                <div className="absolute top-3 left-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full font-dm z-10">Before</div>
+                <img
+                  src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=500&fit=crop&crop=center"
+                  alt="Black dress flat lay on surface"
+                  className="w-full h-56 sm:h-72 object-cover"
+                />
+              </div>
+              <div className="relative">
+                <div className="absolute top-3 left-3 bg-[#E8B86D] text-[#1A1A2E] text-xs px-2.5 py-1 rounded-full font-dm font-semibold z-10">After ✨</div>
+                <img
+                  src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=400&h=500&fit=crop&crop=top"
+                  alt="Model wearing black dress in studio"
+                  className="w-full h-56 sm:h-72 object-cover"
+                />
+              </div>
+            </div>
+            <p className="text-center text-sm text-gray-400 font-dm mt-2 italic">Real example — generated in 10 seconds</p>
+          </div>
         </div>
       </section>
 
