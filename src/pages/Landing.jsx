@@ -82,8 +82,8 @@ export default function Landing() {
             <div className="relative">
               <div className="absolute top-3 left-3 bg-[#E8B86D] text-[#1A1A2E] text-xs px-2.5 py-1 rounded-full font-dm font-semibold z-10">After ✨</div>
               <img
-                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=500&fit=crop&crop=top"
-                alt="Model wearing the same clothing item professionally"
+                src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=400&h=500&fit=crop&crop=top"
+                alt="Model wearing white sweatshirt professionally"
                 className="w-full h-64 sm:h-80 object-cover"
               />
             </div>
