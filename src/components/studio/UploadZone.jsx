@@ -1,53 +1,24 @@
 import { useRef, useState } from 'react';
-import { Camera, ImagePlus, AlertCircle } from 'lucide-react';
-
-async function convertToJpg(file) {
-  // If already a JPEG, skip conversion
-  if (file.type === 'image/jpeg') return file;
-
-  return new Promise((resolve) => {
-    const img = new Image();
-    const objectUrl = URL.createObjectURL(file);
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      canvas.toBlob(
-        (blob) => {
-          URL.revokeObjectURL(objectUrl);
-          if (blob) resolve(new File([blob], 'garment.jpg', { type: 'image/jpeg' }));
-          else resolve(file); // fallback: use original
-        },
-        'image/jpeg',
-        0.95
-      );
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      resolve(file); // fallback: use original file as-is
-    };
-    img.src = objectUrl;
-  });
-}
+import { Camera, ImagePlus } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 export default function UploadZone({ onFileSelect }) {
   const inputRef = useRef(null);
   const [preparing, setPreparing] = useState(false);
-  const [heicError, setHeicError] = useState(false);
 
   const handleFile = async (file) => {
-    const isHeic = file.type === 'image/heic' || file.type === 'image/heif' || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
-    if (isHeic) {
-      setHeicError(true);
-      return;
-    }
-    setHeicError(false);
     setPreparing(true);
-    const jpgFile = await convertToJpg(file);
+
+    // Send file to backend — server handles HEIC conversion transparently
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await base44.functions.invokeRaw('convertImage', formData);
+    const { file_url } = response.data;
+
     setPreparing(false);
-    onFileSelect(jpgFile);
+    // Pass both the original file (for local preview) and the remote url
+    onFileSelect(file, file_url);
   };
 
   const handleChange = (e) => {
