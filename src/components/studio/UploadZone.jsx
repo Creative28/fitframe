@@ -51,6 +51,15 @@ export default function UploadZone({ onFileSelect }) {
     if (file) handleFile(file);
   };
 
+  if (preparing) {
+    return (
+      <div className="flex flex-col items-center justify-center border-2 border-dashed border-[#E8B86D]/50 rounded-2xl bg-white p-10 gap-4 min-h-[240px]">
+        <div className="w-10 h-10 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+        <p className="font-dm text-sm text-gray-500">Preparing your photo...</p>
+      </div>
+    );
+  }
+
   return (
     <div
       className="flex flex-col items-center justify-center border-2 border-dashed border-[#E8B86D]/50 rounded-2xl bg-white cursor-pointer hover:border-[#E8B86D] transition-colors p-10 gap-4"
