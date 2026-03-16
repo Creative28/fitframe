@@ -14,10 +14,12 @@ Deno.serve(async (req) => {
     if (action === "run") {
       const { model_image, garment_image, category } = payload;
       const requestBody = {
-        model_image,
-        garment_image,
-        category: category || "tops",
-        model_name: "tryon-v1.6"
+        model_name: "tryon-v1.6",
+        inputs: {
+          model_image,
+          garment_image,
+          category: category || "tops"
+        }
       };
       console.log("[fashnApi] run payload:", JSON.stringify(requestBody));
       const res = await fetch("https://api.fashn.ai/v1/run", {
