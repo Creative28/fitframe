@@ -13,7 +13,7 @@ export default function UploadZone({ onFileSelect }) {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await base44.functions.invokeRaw('convertImage', formData);
+    const response = await base44.functions.invoke('convertImage', formData);
     const { file_url } = response.data;
 
     setPreparing(false);
