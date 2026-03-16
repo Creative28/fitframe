@@ -81,10 +81,11 @@ export default function Studio() {
 
     const res = await base44.functions.invoke('fashnApi', {
       action: 'run',
-      garment_url: garmentUrl,
-      model_url: selectedModel.thumbnail_url,
-      category: garmentData.category,
-      background: bgPrompt || undefined,
+      payload: {
+        model_image: selectedModel.thumbnail_url,
+        garment_image: garmentUrl,
+        category: garmentData.category,
+      },
     });
 
     const predictionId = res.data?.prediction_id;
@@ -94,13 +95,13 @@ export default function Studio() {
       status: 'processing',
     });
 
-    // Poll for result
+    // Poll for result — every 1s, up to 60 attempts (60s max)
     let result = null;
-    for (let i = 0; i < 30; i++) {
-      await new Promise(r => setTimeout(r, 2000));
+    for (let i = 0; i < 60; i++) {
+      await new Promise(r => setTimeout(r, 1000));
       const poll = await base44.functions.invoke('fashnApi', {
         action: 'status',
-        prediction_id: predictionId,
+        payload: { prediction_id: predictionId },
       });
       if (poll.data?.status === 'completed') {
         result = poll.data;
