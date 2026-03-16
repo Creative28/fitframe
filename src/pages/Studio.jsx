@@ -14,7 +14,8 @@ export default function Studio() {
   const [user, setUser] = useState(null);
   const [step, setStep] = useState('upload'); // upload | configure | generating
   const [garmentFile, setGarmentFile] = useState(null);
-  const [garmentImageUrl, setGarmentImageUrl] = useState(null);
+  const [garmentImageUrl, setGarmentImageUrl] = useState(null); // local blob for preview
+  const [garmentUploadedUrl, setGarmentUploadedUrl] = useState(null); // remote URL for API
   const [garmentId, setGarmentId] = useState(null);
   const [category, setCategory] = useState('tops');
   const [displayCategory, setDisplayCategory] = useState('Top');

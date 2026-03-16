@@ -21,10 +21,13 @@ Deno.serve(async (req) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model_image,
-          garment_image,
-          category: category || "tops",
-          model_name: "tryon-v1.6"
+          model_name: "tryon-v1.6",
+          inputs: {
+            model_image,
+            garment_image,
+            category: category || "auto",
+            mode: "balanced"
+          }
         })
       });
       const data = await res.json();
