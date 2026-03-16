@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
       const data = await res.json();
       console.log("[fashnApi] run response:", res.status, JSON.stringify(data));
       if (!res.ok) {
-        return Response.json({ error: data.detail || data.error || "FASHN API error", full: data }, { status: res.status });
+        return Response.json({ error: data.message || data.detail || data.error || "FASHN API error" }, { status: res.status });
       }
       return Response.json({ prediction_id: data.id });
 
