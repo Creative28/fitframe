@@ -69,7 +69,8 @@ export default function Studio() {
 
   const handleGenerate = async () => {
     if (!selectedModel) return;
-    if (!user || (user.credits_remaining ?? 5) < 1) {
+    const credits = user?.credits_remaining ?? 5;
+    if (credits < 1) {
       setShowCreditsModal(true);
       return;
     }

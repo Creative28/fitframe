@@ -15,6 +15,7 @@ export default function UploadZone({ onFileSelect }) {
     if (file) onFileSelect(file);
   };
 
+  // Allow camera on mobile
   return (
     <div
       className="flex flex-col items-center justify-center border-2 border-dashed border-[#E8B86D]/50 rounded-2xl bg-white cursor-pointer hover:border-[#E8B86D] transition-colors p-10 gap-4"
