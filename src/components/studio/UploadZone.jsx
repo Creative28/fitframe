@@ -30,14 +30,15 @@ export default function UploadZone({ onFileSelect }) {
         <p className="font-playfair text-xl text-[#1A1A2E] font-semibold">Upload Your Item</p>
         <p className="text-sm text-gray-400 font-dm mt-1">Flat-lay, hanger, or any product photo</p>
       </div>
-      <div className="flex items-center gap-2 px-5 py-2.5 bg-[#1A1A2E] text-white rounded-full text-sm font-dm font-medium">
+      <div className="flex items-center gap-2 px-6 py-3.5 bg-[#1A1A2E] text-white rounded-full text-sm font-dm font-medium min-h-[48px]">
         <ImagePlus size={16} />
-        Choose Photo
+        Choose Photo / Take Picture
       </div>
       <input
         ref={inputRef}
         type="file"
         accept="image/*"
+        capture={undefined}
         className="hidden"
         onChange={handleChange}
       />
