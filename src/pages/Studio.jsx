@@ -8,7 +8,8 @@ import BackgroundSelector from '@/components/studio/BackgroundSelector';
 import GeneratingProgress from '@/components/studio/GeneratingProgress';
 import CreditsModal from '@/components/studio/CreditsModal';
 import GarmentPreview from '@/components/studio/GarmentPreview';
-import { Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
+import { Sparkles, ChevronDown, ChevronUp, Layers } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Studio() {
   const navigate = useNavigate();
@@ -155,6 +156,22 @@ export default function Studio() {
       <AppHeader title="Studio" />
       <GeneratingProgress isGenerating={isGenerating} />
       {showCreditsModal && <CreditsModal onClose={() => setShowCreditsModal(false)} />}
+
+      {/* Mode switcher */}
+      <div className="max-w-lg mx-auto px-4 pt-4">
+        <div className="flex bg-gray-100 rounded-xl p-1">
+          <span className="flex-1 py-2 rounded-lg text-sm font-dm font-semibold text-center bg-[#1A1A2E] text-white shadow-sm">
+            Single Item
+          </span>
+          <Link
+            to="/bulk-studio"
+            className="flex-1 py-2 rounded-lg text-sm font-dm font-semibold text-center text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1.5"
+          >
+            <Layers size={14} />
+            Bulk Upload
+          </Link>
+        </div>
+      </div>
 
       <div className="max-w-lg mx-auto px-4 py-6 space-y-8">
 

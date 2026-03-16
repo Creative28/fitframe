@@ -7,7 +7,8 @@ import CreditsModal from '@/components/studio/CreditsModal';
 import MultiUploadZone from '@/components/bulk/MultiUploadZone';
 import GarmentQueueCard from '@/components/bulk/GarmentQueueCard';
 import GenerateDrawer from '@/components/bulk/GenerateDrawer';
-import { ImagePlus, Sparkles } from 'lucide-react';
+import { ImagePlus, Sparkles, Layers } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function BulkStudio() {
   const navigate = useNavigate();
@@ -145,6 +146,22 @@ export default function BulkStudio() {
       <AppHeader title="Bulk Studio" />
       <GeneratingProgress isGenerating={!!activeGeneratingId} />
       {showCreditsModal && <CreditsModal onClose={() => setShowCreditsModal(false)} />}
+
+      {/* Mode switcher */}
+      <div className="max-w-lg mx-auto px-4 pt-4">
+        <div className="flex bg-gray-100 rounded-xl p-1">
+          <Link
+            to="/studio"
+            className="flex-1 py-2 rounded-lg text-sm font-dm font-semibold text-center text-gray-500 hover:text-gray-700"
+          >
+            Single Item
+          </Link>
+          <span className="flex-1 py-2 rounded-lg text-sm font-dm font-semibold text-center bg-[#1A1A2E] text-white shadow-sm flex items-center justify-center gap-1.5">
+            <Layers size={14} />
+            Bulk Upload
+          </span>
+        </div>
+      </div>
 
       <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
 

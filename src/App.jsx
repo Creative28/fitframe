@@ -16,6 +16,7 @@ import TryOnLinks from './pages/TryOnLinks';
 import Account from './pages/Account';
 import CustomerTryOn from './pages/CustomerTryOn';
 import MyPhotos from './pages/MyPhotos.jsx';
+import BulkStudio from './pages/BulkStudio.jsx';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -48,6 +49,7 @@ const AuthenticatedApp = () => {
       {/* Authenticated app shell */}
       <Route element={<AppLayout />}>
         <Route path="/studio" element={<Studio />} />
+        <Route path="/bulk-studio" element={<BulkStudio />} />
         <Route path="/result/:id" element={<Result />} />
         <Route path="/my-photos" element={<MyPhotos />} />
         <Route path="/catalog" element={<Catalog />} />
