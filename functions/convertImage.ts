@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-import sharp from 'npm:sharp@0.33.5';
 
 Deno.serve(async (req) => {
   try {
@@ -20,33 +19,40 @@ Deno.serve(async (req) => {
       fileName.toLowerCase().endsWith('.heic') ||
       fileName.toLowerCase().endsWith('.heif');
 
-    const inputBuffer = new Uint8Array(await file.arrayBuffer());
-
-    let outputBuffer;
-    let outputMime;
-    let outputName;
-
-    if (isHeic) {
-      // Convert HEIC → JPG using Sharp (libvips handles HEIC natively)
-      outputBuffer = await sharp(inputBuffer)
-        .jpeg({ quality: 95 })
-        .toBuffer();
-      outputMime = 'image/jpeg';
-      outputName = fileName.replace(/\.(heic|heif)$/i, '.jpg') || 'photo.jpg';
-    } else {
-      // Pass through as-is
-      outputBuffer = inputBuffer;
-      outputMime = mimeType || 'image/jpeg';
-      outputName = fileName || 'photo.jpg';
+    if (!isHeic) {
+      // Not HEIC — just upload directly to Base44
+      const { file_url } = await base44.asServiceRole.integrations.Core.UploadFile({ file });
+      return Response.json({ file_url, converted: false });
     }
 
-    // Upload converted file to Base44 storage
-    const blob = new Blob([outputBuffer], { type: outputMime });
-    const uploadFile = new File([blob], outputName, { type: outputMime });
+    // HEIC: upload to Cloudinary which auto-converts to JPG
+    const CLOUDINARY_CLOUD_NAME = Deno.env.get('CLOUDINARY_CLOUD_NAME');
+    const CLOUDINARY_UPLOAD_PRESET = Deno.env.get('CLOUDINARY_UPLOAD_PRESET');
 
-    const { file_url } = await base44.asServiceRole.integrations.Core.UploadFile({ file: uploadFile });
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+      return Response.json({ error: 'Cloudinary not configured' }, { status: 500 });
+    }
 
-    return Response.json({ file_url, converted: isHeic });
+    const cloudinaryForm = new FormData();
+    cloudinaryForm.append('file', file);
+    cloudinaryForm.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    cloudinaryForm.append('format', 'jpg');
+
+    const cloudRes = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      { method: 'POST', body: cloudinaryForm }
+    );
+
+    if (!cloudRes.ok) {
+      const err = await cloudRes.text();
+      console.error('[convertImage] Cloudinary error:', err);
+      return Response.json({ error: 'Cloudinary conversion failed' }, { status: 500 });
+    }
+
+    const cloudData = await cloudRes.json();
+    const jpgUrl = cloudData.secure_url;
+
+    return Response.json({ file_url: jpgUrl, converted: true });
   } catch (error) {
     console.error('[convertImage] error:', error);
     return Response.json({ error: error.message }, { status: 500 });
