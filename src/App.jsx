@@ -9,8 +9,8 @@ import AppLayout from '@/components/layout/AppLayout';
 
 // Pages
 import Landing from './pages/Landing';
-import Studio from './pages/Studio.jsx';
-import Result from './pages/Result.jsx';
+import Studio from './pages/Studio';
+import Result from './pages/Result';
 import Catalog from './pages/Catalog';
 import TryOnLinks from './pages/TryOnLinks';
 import Account from './pages/Account';
