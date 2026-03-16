@@ -76,7 +76,7 @@ export default function MyPhotos() {
     });
     const url = `${window.location.origin}/try/${code}`;
     navigator.clipboard.writeText(url);
-    alert('Try-on link copied to clipboard!\n\n' + url);
+    toast({ title: '✅ Link copied!', description: url });
   };
 
   if (loading) {
