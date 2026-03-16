@@ -22,22 +22,16 @@ export default function CustomerTryOn() {
 
   const loadLink = async () => {
     try {
-      const links = await base44.entities.TryOnLink.filter({ unique_code: code });
-      if (!links || links.length === 0) {
+      const res = await base44.functions.invoke('fashnApi', {
+        action: 'get_tryon_link',
+        payload: { unique_code: code }
+      });
+      const l = res.data?.link;
+      if (!l) {
         setNotFound(true);
         return;
       }
-      const l = links[0];
       setLink(l);
-
-      // Increment view count
-      await base44.entities.TryOnLink.update(l.id, { views_count: (l.views_count || 0) + 1 });
-
-      // Get seller info
-      if (l.created_by) {
-        const users = await base44.entities.User.filter({ created_by: l.created_by }).catch(() => []);
-        if (users[0]?.business_name) setSellerName(users[0].business_name);
-      }
     } catch (e) {
       console.error(e);
       setNotFound(true);
