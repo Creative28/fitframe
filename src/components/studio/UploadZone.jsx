@@ -35,8 +35,15 @@ async function convertToJpg(file) {
 export default function UploadZone({ onFileSelect }) {
   const inputRef = useRef(null);
   const [preparing, setPreparing] = useState(false);
+  const [heicError, setHeicError] = useState(false);
 
   const handleFile = async (file) => {
+    const isHeic = file.type === 'image/heic' || file.type === 'image/heif' || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
+    if (isHeic) {
+      setHeicError(true);
+      return;
+    }
+    setHeicError(false);
     setPreparing(true);
     const jpgFile = await convertToJpg(file);
     setPreparing(false);
