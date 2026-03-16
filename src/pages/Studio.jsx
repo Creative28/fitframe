@@ -29,7 +29,7 @@ export default function Studio() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  const handleFileSelect = async (file) => {
+  const handleFileSelect = async (file, uploadedUrl) => {
     const objectUrl = URL.createObjectURL(file);
     setGarmentFile(file);
     setGarmentImageUrl(objectUrl);
@@ -37,8 +37,8 @@ export default function Studio() {
     setIsAnalyzing(true);
 
     try {
-      // Upload the file — this is required for generation
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      // File already uploaded (and HEIC converted) by UploadZone
+      const file_url = uploadedUrl;
       setGarmentUploadedUrl(file_url);
 
       // Analyze the garment (best-effort — failures don't block generation)
