@@ -29,7 +29,7 @@ const PLANS = [
 
 const STEPS = [
   { icon: Upload, step: '01', title: 'Upload your item', desc: 'Any photo — hanger, flat-lay, or mannequin' },
-  { icon: Cpu, step: '02', title: 'Pick your model', desc: 'Choose from 12+ diverse AI fashion models' },
+  { icon: Cpu, step: '02', title: 'Pick your model', desc: 'Women & men — diverse models for every body type' },
   { icon: Download, step: '03', title: 'Download and sell', desc: 'Professional model photos in 10 seconds' },
 ];
 
