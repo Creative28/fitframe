@@ -232,7 +232,7 @@ export default function Studio() {
             </button>
 
             <button
-              onClick={() => { setStep('upload'); setGarmentImageUrl(null); setSelectedModel(null); }}
+              onClick={() => { setStep('upload'); setGarmentImageUrl(null); setGarmentUploadedUrl(null); setSelectedModel(null); }}
               className="text-center text-sm text-gray-400 font-dm hover:text-gray-600 py-2"
             >
               ← Upload a different photo
