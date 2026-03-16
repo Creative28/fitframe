@@ -39,6 +39,7 @@ export default function Studio() {
     try {
       // Upload the file first
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setGarmentUploadedUrl(file_url);
 
       // Analyze the garment
       const analysis = await base44.functions.invoke('fashnApi', {
