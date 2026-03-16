@@ -2,7 +2,10 @@ import { useRef, useState } from 'react';
 import { Camera, ImagePlus } from 'lucide-react';
 
 async function convertToJpg(file) {
-  return new Promise((resolve, reject) => {
+  // If already a JPEG, skip conversion
+  if (file.type === 'image/jpeg') return file;
+
+  return new Promise((resolve) => {
     const img = new Image();
     const objectUrl = URL.createObjectURL(file);
     img.onload = () => {
@@ -15,7 +18,7 @@ async function convertToJpg(file) {
         (blob) => {
           URL.revokeObjectURL(objectUrl);
           if (blob) resolve(new File([blob], 'garment.jpg', { type: 'image/jpeg' }));
-          else reject(new Error('Canvas conversion failed'));
+          else resolve(file); // fallback: use original
         },
         'image/jpeg',
         0.95
@@ -23,7 +26,7 @@ async function convertToJpg(file) {
     };
     img.onerror = () => {
       URL.revokeObjectURL(objectUrl);
-      reject(new Error('Image load failed'));
+      resolve(file); // fallback: use original file as-is
     };
     img.src = objectUrl;
   });
