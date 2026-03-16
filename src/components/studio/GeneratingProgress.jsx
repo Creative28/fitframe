@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const STEPS = [
-  { label: 'Removing background…', duration: 3000 },
-  { label: 'Fitting garment…', duration: 5000 },
-  { label: 'Adjusting lighting…', duration: 4000 },
-  { label: 'Almost ready…', duration: 3000 },
+  { label: 'Uploading photo…', duration: 2000 },
+  { label: 'Preparing image…', duration: 4000 },
+  { label: 'Generating model photo…', duration: 8000 },
+  { label: 'Finalizing image…', duration: 4000 },
 ];
 
 export default function GeneratingProgress({ isGenerating }) {

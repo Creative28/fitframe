@@ -3,64 +3,68 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import UploadZone from '@/components/studio/UploadZone.jsx';
-import GarmentPreview from '@/components/studio/GarmentPreview';
 import ModelSelector, { BUILTIN_MODELS } from '@/components/studio/ModelSelector';
+import BackgroundSelector from '@/components/studio/BackgroundSelector.jsx';
 import GeneratingProgress from '@/components/studio/GeneratingProgress';
 import CreditsModal from '@/components/studio/CreditsModal';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, ChevronLeft } from 'lucide-react';
 
 export default function Studio() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [step, setStep] = useState('upload'); // upload | configure | generating
   const [garmentFile, setGarmentFile] = useState(null);
-  const [garmentImageUrl, setGarmentImageUrl] = useState(null); // local blob for preview
-  const [garmentUploadedUrl, setGarmentUploadedUrl] = useState(null); // remote URL for API
+  const [garmentImageUrl, setGarmentImageUrl] = useState(null);
+  const [garmentUploadedUrl, setGarmentUploadedUrl] = useState(null);
   const [garmentId, setGarmentId] = useState(null);
   const [category, setCategory] = useState('tops');
   const [displayCategory, setDisplayCategory] = useState('Top');
   const [color, setColor] = useState('');
   const [selectedModel, setSelectedModel] = useState(null);
+  const [backgroundType, setBackgroundType] = useState('none');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showCreditsModal, setShowCreditsModal] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    base44.auth.me().then(u => {
+      // Grant signup bonus if first time (no credits set yet)
+      if (u && u.credits_remaining === undefined) {
+        base44.auth.updateMe({ credits_remaining: 5 });
+        u.credits_remaining = 5;
+      }
+      setUser(u);
+    }).catch(() => {});
   }, []);
 
   const handleFileSelect = async (file, uploadedUrl) => {
     const objectUrl = URL.createObjectURL(file);
     setGarmentFile(file);
     setGarmentImageUrl(objectUrl);
+    setGarmentUploadedUrl(uploadedUrl);
     setStep('configure');
     setIsAnalyzing(true);
 
     try {
-      // File already uploaded (and HEIC converted) by UploadZone
-      const file_url = uploadedUrl;
-      setGarmentUploadedUrl(file_url);
-
-      // Analyze the garment (best-effort — failures don't block generation)
+      // Analyze garment with AI (best-effort)
       let analysisData = {};
       try {
         const analysis = await base44.functions.invoke('fashnApi', {
           action: 'remove_background',
-          payload: { image_url: file_url }
+          payload: { image_url: uploadedUrl }
         });
         analysisData = analysis.data || {};
-      } catch (analysisErr) {
-        console.warn('Analysis failed, using defaults:', analysisErr);
+      } catch (e) {
+        console.warn('Analysis failed, using defaults');
       }
 
       if (analysisData.category) setCategory(analysisData.category);
       if (analysisData.display_category) setDisplayCategory(analysisData.display_category);
       if (analysisData.color) setColor(analysisData.color);
 
-      // Create garment record
       const garment = await base44.entities.Garment.create({
-        original_image_url: file_url,
-        processed_image_url: file_url,
+        original_image_url: uploadedUrl,
+        processed_image_url: uploadedUrl,
         category: analysisData.category || 'tops',
         display_category: analysisData.display_category || 'Top',
         color: analysisData.color || '',
@@ -68,7 +72,7 @@ export default function Studio() {
       });
       setGarmentId(garment.id);
     } catch (err) {
-      console.error('Upload failed:', err);
+      console.error('Setup error:', err);
     } finally {
       setIsAnalyzing(false);
     }
@@ -85,61 +89,45 @@ export default function Studio() {
     setIsGenerating(true);
 
     try {
-      // Deduct credit
-      await base44.auth.updateMe({ credits_remaining: (user.credits_remaining ?? 5) - 1 });
+      await base44.auth.updateMe({ credits_remaining: credits - 1 });
 
-      // Start generation 1
-      const run1 = await base44.functions.invoke('fashnApi', {
-        action: 'run',
-        payload: {
-          model_image: selectedModel.thumbnail_url,
-          garment_image: garmentUploadedUrl,
-          category
-        }
-      });
-
-      // Start generation 2 (slight variation)
-      const run2 = await base44.functions.invoke('fashnApi', {
-        action: 'run',
-        payload: {
-          model_image: selectedModel.thumbnail_url,
-          garment_image: garmentUploadedUrl,
-          category
-        }
-      });
+      const [run1, run2] = await Promise.all([
+        base44.functions.invoke('fashnApi', {
+          action: 'run',
+          payload: { model_image: selectedModel.thumbnail_url, garment_image: garmentUploadedUrl, category }
+        }),
+        base44.functions.invoke('fashnApi', {
+          action: 'run',
+          payload: { model_image: selectedModel.thumbnail_url, garment_image: garmentUploadedUrl, category }
+        })
+      ]);
 
       const predId1 = run1.data?.prediction_id;
       const predId2 = run2.data?.prediction_id;
 
-      // Create generation record
       const generation = await base44.entities.Generation.create({
         garment_id: garmentId,
         model_id: selectedModel.id,
+        background_type: backgroundType,
         prediction_id: predId1,
         prediction_id_2: predId2,
         status: 'processing',
       });
 
-      // Log credit transaction
       await base44.entities.CreditTransaction.create({
         amount: -1,
         type: 'generation',
-        description: `Generated photo for ${displayCategory}`,
+        description: `Generated photo — ${displayCategory}`,
         generation_id: generation.id
       });
 
-      // Poll for results
       const pollResult = async (predId, maxMs = 120000) => {
         const start = Date.now();
         while (Date.now() - start < maxMs) {
           await new Promise(r => setTimeout(r, 3000));
-          const statusRes = await base44.functions.invoke('fashnApi', {
-            action: 'status',
-            payload: { prediction_id: predId }
-          });
-          const s = statusRes.data;
-          if (s?.status === 'completed' && s?.output?.length > 0) return s.output[0];
-          if (s?.status === 'failed') throw new Error('Generation failed');
+          const s = await base44.functions.invoke('fashnApi', { action: 'status', payload: { prediction_id: predId } });
+          if (s.data?.status === 'completed' && s.data?.output?.length > 0) return s.data.output[0];
+          if (s.data?.status === 'failed') throw new Error('Generation failed');
         }
         throw new Error('Timeout');
       };
@@ -151,14 +139,9 @@ export default function Studio() {
           pollResult(predId2).catch(() => null)
         ]);
       } catch (pollErr) {
-        // Refund credit on failure
-        await base44.auth.updateMe({ credits_remaining: (user.credits_remaining ?? 5) });
-        await base44.entities.CreditTransaction.create({
-          amount: 1,
-          type: 'refund',
-          description: 'Generation failed — credit refunded',
-          generation_id: generation.id
-        });
+        // Refund credit
+        await base44.auth.updateMe({ credits_remaining: credits });
+        await base44.entities.CreditTransaction.create({ amount: 1, type: 'refund', description: 'Generation failed — credit refunded', generation_id: generation.id });
         await base44.entities.Generation.update(generation.id, { status: 'failed' });
         setIsGenerating(false);
         alert('Generation failed — your credit was returned. Please try again.');
@@ -168,12 +151,27 @@ export default function Studio() {
       await base44.entities.Generation.update(generation.id, {
         status: 'completed',
         result_image_url: url1,
-        result_image_url_2: url2 || url1
+        result_image_url_2: url2 || url1,
+        background_type: backgroundType,
+      });
+
+      // Save to Photo library
+      const user2 = await base44.auth.me();
+      await base44.entities.Photo.create({
+        garment_image_url: garmentUploadedUrl,
+        generated_image_url: url1,
+        generated_image_url_2: url2 || url1,
+        model_id: selectedModel.id,
+        model_name: selectedModel.name,
+        background_type: backgroundType,
+        garment_id: garmentId,
+        generation_id: generation.id,
+        category,
       });
 
       setIsGenerating(false);
       navigate(`/result/${generation.id}`, {
-        state: { url1, url2: url2 || url1, garmentId, selectedModel, category, displayCategory, color }
+        state: { url1, url2: url2 || url1, garmentId, garmentImageUrl: garmentUploadedUrl, selectedModel, category, displayCategory, color, backgroundType, generationId: generation.id }
       });
 
     } catch (err) {
@@ -186,9 +184,11 @@ export default function Studio() {
   const canGenerate = selectedModel && garmentUploadedUrl && !isAnalyzing;
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
-      <AppHeader title="Just Fit It" />
-      <div className="px-4 py-6 flex flex-col gap-6">
+    <div className="min-h-screen bg-[#FAFAF8] pb-28">
+      <AppHeader title="Studio" />
+
+      <div className="px-4 py-6 flex flex-col gap-6 max-w-lg mx-auto">
+        {/* STEP 1 — Upload */}
         {step === 'upload' && (
           <div className="flex flex-col gap-4">
             <div className="text-center py-4">
@@ -196,32 +196,44 @@ export default function Studio() {
               <p className="text-gray-400 font-dm text-sm mt-2">Upload any garment photo — we'll put it on a model</p>
             </div>
             <UploadZone onFileSelect={handleFileSelect} />
-            <div className="text-center text-xs text-gray-400 font-dm">
+            <p className="text-center text-xs text-gray-400 font-dm">
               Works best with flat-lay, hanger, or mannequin photos
-            </div>
+            </p>
           </div>
         )}
 
+        {/* STEPS 2–4 — Configure & Generate */}
         {step === 'configure' && (
           <div className="flex flex-col gap-6">
+            {/* Garment thumbnail */}
             {isAnalyzing ? (
-              <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-3">
-                <div className="w-10 h-10 border-3 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+              <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-3 border border-gray-100">
+                <div className="w-10 h-10 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
                 <p className="font-dm text-sm text-gray-500">Analyzing your garment…</p>
               </div>
             ) : (
-              <GarmentPreview
-                imageUrl={garmentImageUrl}
-                category={category}
-                color={color}
-                displayCategory={displayCategory}
-                onCategoryChange={setCategory}
-                onColorChange={setColor}
-              />
+              <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                <div className="relative bg-gray-50 flex items-center justify-center" style={{ minHeight: 200 }}>
+                  <img
+                    src={garmentImageUrl}
+                    alt="Your garment"
+                    className="max-h-52 w-auto object-contain"
+                    style={{ maxWidth: '100%' }}
+                  />
+                  <div className="absolute top-3 right-3 bg-[#1A1A2E]/70 text-white text-xs px-2.5 py-1 rounded-full font-dm">
+                    {displayCategory} · {color}
+                  </div>
+                </div>
+              </div>
             )}
 
+            {/* Step 2 — Model */}
             <ModelSelector selectedModelId={selectedModel?.id} onSelect={setSelectedModel} />
 
+            {/* Step 3 — Background */}
+            <BackgroundSelector selected={backgroundType} onSelect={setBackgroundType} />
+
+            {/* Step 4 — Generate */}
             <button
               onClick={handleGenerate}
               disabled={!canGenerate}
@@ -237,7 +249,7 @@ export default function Studio() {
             </button>
 
             <button
-              onClick={() => { setStep('upload'); setGarmentImageUrl(null); setGarmentUploadedUrl(null); setSelectedModel(null); }}
+              onClick={() => { setStep('upload'); setGarmentImageUrl(null); setGarmentUploadedUrl(null); setSelectedModel(null); setBackgroundType('none'); }}
               className="text-center text-sm text-gray-400 font-dm hover:text-gray-600 py-2"
             >
               ← Upload a different photo
