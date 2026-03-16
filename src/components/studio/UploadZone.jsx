@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Camera, ImagePlus } from 'lucide-react';
 
 async function convertToJpg(file) {
