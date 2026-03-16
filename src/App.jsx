@@ -41,6 +41,7 @@ const AuthenticatedApp = () => {
     <Routes>
       {/* Public pages */}
       <Route path="/" element={<Landing />} />
+      <Route path="/Landing" element={<Landing />} />
       <Route path="/try/:code" element={<CustomerTryOn />} />
 
       {/* Authenticated app shell */}
