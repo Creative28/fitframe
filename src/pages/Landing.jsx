@@ -60,7 +60,7 @@ export default function Landing() {
             Your clothes deserve<br /><em>better photos.</em>
           </h1>
           <p className="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed mb-8">
-            Turn any product photo into a professional model shot in 10 seconds. No photographer. No model fees.
+            Turn any product photo into a professional model shot in 10 seconds. For women and men — diverse models for every clothing style and body type.
           </p>
           <button
             onClick={() => window.location.href = '/studio'}
