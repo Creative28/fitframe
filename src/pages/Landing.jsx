@@ -57,16 +57,16 @@ export default function Landing() {
             5 free photos on signup — no card needed
           </div>
           <h1 className="font-playfair text-4xl sm:text-6xl font-bold text-[#1A1A2E] leading-tight mb-4">
-            Your clothes deserve<br /><em>better photos.</em>
+            Turn your clothing photos into<br /><em>professional model shots</em><br />in seconds.
           </h1>
           <p className="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed mb-8">
-            Turn any product photo into a professional model shot in 10 seconds. For women and men — diverse models for every clothing style and body type.
+            Upload any garment photo. Choose a model. Get a studio-quality product image instantly.
           </p>
           <button
             onClick={() => window.location.href = '/studio'}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold hover:bg-[#2a2a4e] transition-colors"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold hover:bg-[#2a2a4e] transition-colors min-h-[56px]"
           >
-            Try it free — 5 photos on us
+            Try 5 photos free
             <ArrowRight size={20} />
           </button>
         </div>

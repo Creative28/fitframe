@@ -9,12 +9,13 @@ import AppLayout from '@/components/layout/AppLayout';
 
 // Pages
 import Landing from './pages/Landing';
-import Studio from './pages/Studio';
-import Result from './pages/Result';
+import Studio from './pages/Studio.jsx';
+import Result from './pages/Result.jsx';
 import Catalog from './pages/Catalog';
 import TryOnLinks from './pages/TryOnLinks';
 import Account from './pages/Account';
 import CustomerTryOn from './pages/CustomerTryOn';
+import MyPhotos from './pages/MyPhotos.jsx';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -48,6 +49,7 @@ const AuthenticatedApp = () => {
       <Route element={<AppLayout />}>
         <Route path="/studio" element={<Studio />} />
         <Route path="/result/:id" element={<Result />} />
+        <Route path="/my-photos" element={<MyPhotos />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/tryon-links" element={<TryOnLinks />} />
         <Route path="/account" element={<Account />} />

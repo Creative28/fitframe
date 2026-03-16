@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Camera, Grid3x3, Link2, User } from 'lucide-react';
+import { Camera, Images, Link2, User } from 'lucide-react';
 
 const tabs = [
-  { path: '/studio', icon: Camera, label: 'New Photo' },
-  { path: '/catalog', icon: Grid3x3, label: 'My Catalog' },
+  { path: '/studio', icon: Camera, label: 'Studio' },
+  { path: '/my-photos', icon: Images, label: 'My Photos' },
   { path: '/tryon-links', icon: Link2, label: 'Try-On Links' },
   { path: '/account', icon: User, label: 'Account' },
 ];
