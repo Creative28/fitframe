@@ -37,33 +37,38 @@ export default function Studio() {
     setIsAnalyzing(true);
 
     try {
-      // Upload the file first
+      // Upload the file — this is required for generation
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setGarmentUploadedUrl(file_url);
 
-      // Analyze the garment
-      const analysis = await base44.functions.invoke('fashnApi', {
-        action: 'remove_background',
-        payload: { image_url: file_url }
-      });
-      const data = analysis.data;
+      // Analyze the garment (best-effort — failures don't block generation)
+      let analysisData = {};
+      try {
+        const analysis = await base44.functions.invoke('fashnApi', {
+          action: 'remove_background',
+          payload: { image_url: file_url }
+        });
+        analysisData = analysis.data || {};
+      } catch (analysisErr) {
+        console.warn('Analysis failed, using defaults:', analysisErr);
+      }
 
-      if (data?.category) setCategory(data.category);
-      if (data?.display_category) setDisplayCategory(data.display_category);
-      if (data?.color) setColor(data.color);
+      if (analysisData.category) setCategory(analysisData.category);
+      if (analysisData.display_category) setDisplayCategory(analysisData.display_category);
+      if (analysisData.color) setColor(analysisData.color);
 
       // Create garment record
       const garment = await base44.entities.Garment.create({
         original_image_url: file_url,
-        processed_image_url: file_url, // In production, you'd run bg removal
-        category: data?.category || 'tops',
-        display_category: data?.display_category || 'Top',
-        color: data?.color || '',
-        name: data?.name || 'My Item',
+        processed_image_url: file_url,
+        category: analysisData.category || 'tops',
+        display_category: analysisData.display_category || 'Top',
+        color: analysisData.color || '',
+        name: analysisData.name || 'My Item',
       });
       setGarmentId(garment.id);
     } catch (err) {
-      console.error('Analysis failed:', err);
+      console.error('Upload failed:', err);
     } finally {
       setIsAnalyzing(false);
     }
