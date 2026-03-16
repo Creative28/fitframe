@@ -163,6 +163,33 @@ export default function Account() {
           </div>
         )}
 
+        {/* Email Preferences */}
+        <div className="bg-white rounded-2xl p-5 border border-gray-100">
+          <h3 className="font-playfair text-base font-bold text-[#1A1A2E] mb-3 flex items-center gap-2">
+            <Bell size={16} /> Email Preferences
+          </h3>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-dm text-gray-700">Marketing & announcement emails</p>
+              <p className="text-xs font-dm text-gray-400 mt-0.5">New features, models, and promotions</p>
+            </div>
+            <button
+              onClick={async () => {
+                const newVal = !(user?.receive_marketing_emails ?? true);
+                await base44.auth.updateMe({ receive_marketing_emails: newVal });
+                setUser(prev => ({ ...prev, receive_marketing_emails: newVal }));
+              }}
+              className={`relative w-12 h-6 rounded-full transition-colors ${
+                (user?.receive_marketing_emails ?? true) ? 'bg-[#1A1A2E]' : 'bg-gray-200'
+              }`}
+            >
+              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                (user?.receive_marketing_emails ?? true) ? 'translate-x-7' : 'translate-x-1'
+              }`} />
+            </button>
+          </div>
+        </div>
+
         {/* Sign out */}
         <button
           onClick={() => base44.auth.logout()}
