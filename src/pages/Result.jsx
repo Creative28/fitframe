@@ -25,12 +25,22 @@ export default function Result() {
     });
   }, [id]);
 
-  const handleDownload = (url, format) => {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `just-fit-it-${format}-${Date.now()}.jpg`;
-    link.target = '_blank';
-    link.click();
+  const handleDownload = async (url, format) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `just-fit-it-${format}-${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      // Fallback: open in new tab
+      window.open(url, '_blank');
+    }
   };
 
   if (loading) {
