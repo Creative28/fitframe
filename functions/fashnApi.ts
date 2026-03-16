@@ -12,25 +12,24 @@ Deno.serve(async (req) => {
     }
 
     if (action === "run") {
-      // Start a generation
       const { model_image, garment_image, category } = payload;
+      const requestBody = {
+        model_image,
+        garment_image,
+        category: category || "tops",
+        model_name: "tryon-v1.6"
+      };
+      console.log("[fashnApi] run payload:", JSON.stringify(requestBody));
       const res = await fetch("https://api.fashn.ai/v1/run", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${FASHN_API_KEY}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          model_name: "tryon-v1.6",
-          inputs: {
-            model_image,
-            garment_image,
-            category: category || "auto",
-            mode: "balanced"
-          }
-        })
+        body: JSON.stringify(requestBody)
       });
       const data = await res.json();
+      console.log("[fashnApi] run response:", res.status, JSON.stringify(data));
       if (!res.ok) {
         return Response.json({ error: data.detail || data.error || "FASHN API error" }, { status: res.status });
       }
