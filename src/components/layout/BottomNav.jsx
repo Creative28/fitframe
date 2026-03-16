@@ -20,7 +20,7 @@ export default function BottomNav() {
             <Link
               key={path}
               to={path}
-              className={`relative flex-1 flex flex-col items-center justify-center py-3 gap-1 transition-colors ${
+              className={`relative flex-1 flex flex-col items-center justify-center py-4 gap-1 transition-colors min-h-[56px] ${
                 active ? 'text-[#1A1A2E]' : 'text-gray-400'
               }`}
             >

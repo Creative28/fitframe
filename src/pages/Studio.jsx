@@ -218,9 +218,9 @@ export default function Studio() {
             <button
               onClick={handleGenerate}
               disabled={!canGenerate}
-              className={`w-full py-4 rounded-2xl font-playfair text-lg font-semibold flex items-center justify-center gap-3 transition-all ${
+              className={`w-full rounded-2xl font-playfair text-lg font-semibold flex items-center justify-center gap-3 transition-all min-h-[56px] ${
                 canGenerate
-                  ? 'bg-[#1A1A2E] text-white active:scale-98 hover:bg-[#2a2a4e]'
+                  ? 'bg-[#1A1A2E] text-white active:scale-[0.98] hover:bg-[#2a2a4e]'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
