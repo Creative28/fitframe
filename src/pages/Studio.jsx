@@ -178,7 +178,7 @@ export default function Studio() {
     }
   };
 
-  const canGenerate = selectedModel && garmentImageUrl && !isAnalyzing;
+  const canGenerate = selectedModel && garmentUploadedUrl && !isAnalyzing;
 
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
