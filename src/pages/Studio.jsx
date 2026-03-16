@@ -88,7 +88,7 @@ export default function Studio() {
         action: 'run',
         payload: {
           model_image: selectedModel.thumbnail_url,
-          garment_image: garmentImageUrl,
+          garment_image: garmentUploadedUrl,
           category
         }
       });
@@ -98,7 +98,7 @@ export default function Studio() {
         action: 'run',
         payload: {
           model_image: selectedModel.thumbnail_url,
-          garment_image: garmentImageUrl,
+          garment_image: garmentUploadedUrl,
           category
         }
       });
