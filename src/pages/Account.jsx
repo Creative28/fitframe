@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
-import { Sparkles, CreditCard, LogOut, ChevronRight, Store, User, Check } from 'lucide-react';
+import { Sparkles, CreditCard, LogOut, ChevronRight, Store, User, Check, Bell } from 'lucide-react';
 import CreditsModal from '@/components/studio/CreditsModal';
 
 const PLAN_LABELS = { free: 'Free', starter: 'Starter', growth: 'Growth', pro: 'Pro' };
@@ -18,6 +18,19 @@ export default function Account() {
 
   useEffect(() => {
     loadUser();
+  }, []);
+
+  useEffect(() => {
+    // Handle unsubscribe via URL param
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('unsubscribe') === '1') {
+      base44.auth.me().then(u => {
+        if (u) {
+          base44.auth.updateMe({ receive_marketing_emails: false });
+          setUser(prev => prev ? { ...prev, receive_marketing_emails: false } : prev);
+        }
+      }).catch(() => {});
+    }
   }, []);
 
   const loadUser = async () => {
