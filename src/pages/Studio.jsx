@@ -129,10 +129,10 @@ export default function Studio() {
       });
 
       // Poll for results
-      const pollResult = async (predId, maxMs = 30000) => {
+      const pollResult = async (predId, maxMs = 120000) => {
         const start = Date.now();
         while (Date.now() - start < maxMs) {
-          await new Promise(r => setTimeout(r, 2000));
+          await new Promise(r => setTimeout(r, 3000));
           const statusRes = await base44.functions.invoke('fashnApi', {
             action: 'status',
             payload: { prediction_id: predId }
