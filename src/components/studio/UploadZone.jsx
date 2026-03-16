@@ -55,12 +55,6 @@ export default function UploadZone({ onFileSelect }) {
         <p className="font-playfair text-xl text-[#1A1A2E] font-semibold">Upload Your Item</p>
         <p className="text-sm text-gray-400 font-dm mt-1">Flat-lay, hanger, or any product photo</p>
       </div>
-      {heicError && (
-        <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600 font-dm w-full">
-          <AlertCircle size={16} className="flex-shrink-0" />
-          <span>HEIC photos aren't supported. Please export as JPG or PNG from your Photos app and try again.</span>
-        </div>
-      )}
       <div className="flex items-center gap-2 px-6 py-3.5 bg-[#1A1A2E] text-white rounded-full text-sm font-dm font-medium min-h-[48px]">
         <ImagePlus size={16} />
         Choose Photo / Take Picture
