@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
-import UploadZone from '@/components/studio/UploadZone';
+import UploadZone from '@/components/studio/UploadZone.jsx';
 import GarmentPreview from '@/components/studio/GarmentPreview';
 import ModelSelector, { BUILTIN_MODELS } from '@/components/studio/ModelSelector';
 import GeneratingProgress from '@/components/studio/GeneratingProgress';
