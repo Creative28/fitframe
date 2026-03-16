@@ -9,15 +9,29 @@ export default function UploadZone({ onFileSelect }) {
   const handleFile = async (file) => {
     setPreparing(true);
 
-    // Send file to backend — server handles HEIC conversion transparently
-    const formData = new FormData();
-    formData.append('file', file);
+    const fileName = file.name || '';
+    const mimeType = file.type || '';
+    const isHeic =
+      mimeType === 'image/heic' ||
+      mimeType === 'image/heif' ||
+      fileName.toLowerCase().endsWith('.heic') ||
+      fileName.toLowerCase().endsWith('.heif');
 
-    const response = await base44.functions.invoke('convertImage', formData);
-    const { file_url } = response.data;
+    let file_url;
+
+    if (isHeic) {
+      // HEIC: must go through backend for Cloudinary conversion
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await base44.functions.invoke('convertImage', formData);
+      file_url = response.data.file_url;
+    } else {
+      // JPG/PNG/etc: upload directly from browser — much faster
+      const result = await base44.integrations.Core.UploadFile({ file });
+      file_url = result.file_url;
+    }
 
     setPreparing(false);
-    // Pass both the original file (for local preview) and the remote url
     onFileSelect(file, file_url);
   };
 
