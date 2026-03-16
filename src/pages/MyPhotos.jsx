@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
-import { Download, Trash2, RefreshCw, Link2, Plus } from 'lucide-react';
+import { Download, Trash2, RefreshCw, Link2, Plus, Check } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function MyPhotos() {
   const navigate = useNavigate();
