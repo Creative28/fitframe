@@ -44,11 +44,20 @@ export default function MyPhotos() {
 
   const handleDownload = async (url, format = 'original') => {
     if (!url) return;
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `just-fit-it-${format}-${Date.now()}.jpg`;
-    link.target = '_blank';
-    link.click();
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `just-fit-it-${format}-${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      window.open(url, '_blank');
+    }
   };
 
   const handleCreateTryOnLink = async (photo) => {
