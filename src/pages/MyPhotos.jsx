@@ -7,6 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 
 export default function MyPhotos() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
