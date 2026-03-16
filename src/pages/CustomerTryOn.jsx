@@ -80,17 +80,15 @@ export default function CustomerTryOn() {
 
       if (!resultImageUrl) throw new Error('Timeout');
 
-      // Save customer try-on
-      await base44.entities.CustomerTryOn.create({
-        tryon_link_id: link.id,
-        customer_image_url: customerFileUrl,
-        result_image_url: resultImageUrl,
-        status: 'completed'
-      });
-
-      // Increment completions
-      await base44.entities.TryOnLink.update(link.id, {
-        completions_count: (link.completions_count || 0) + 1
+      // Save customer try-on & increment completions via service role
+      await base44.functions.invoke('fashnApi', {
+        action: 'save_tryon',
+        payload: {
+          tryon_link_id: link.id,
+          customer_image_url: customerFileUrl,
+          result_image_url: resultImageUrl,
+          completions_count: (link.completions_count || 0) + 1
+        }
       });
 
       setResultUrl(resultImageUrl);
