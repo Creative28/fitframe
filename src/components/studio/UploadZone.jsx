@@ -31,10 +31,12 @@ async function convertToJpg(file) {
 
 export default function UploadZone({ onFileSelect }) {
   const inputRef = useRef(null);
+  const [preparing, setPreparing] = useState(false);
 
   const handleFile = async (file) => {
-    // Convert any format (HEIC, WEBP, PNG, etc.) to JPG before passing up
+    setPreparing(true);
     const jpgFile = await convertToJpg(file);
+    setPreparing(false);
     onFileSelect(jpgFile);
   };
 
