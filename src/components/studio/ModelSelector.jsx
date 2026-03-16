@@ -62,19 +62,48 @@ const FEMALE_FILTERS = ['All', 'Petite', 'Curvy', 'Plus Size', 'Athletic'];
 const MALE_FILTERS = ['All', 'Athletic', 'Casual', 'Smart Casual', 'Plus Size'];
 
 export default function ModelSelector({ selectedModelId, onSelect }) {
+  const [gender, setGender] = useState('female');
   const [activeFilter, setActiveFilter] = useState('All');
 
+  const models = gender === 'female' ? FEMALE_MODELS : MALE_MODELS;
+  const filters = gender === 'female' ? FEMALE_FILTERS : MALE_FILTERS;
+
   const filtered = activeFilter === 'All'
-    ? BUILTIN_MODELS
-    : BUILTIN_MODELS.filter(m => m.body_type === activeFilter);
+    ? models
+    : models.filter(m => m.body_type === activeFilter);
+
+  const handleGenderSwitch = (g) => {
+    setGender(g);
+    setActiveFilter('All');
+  };
 
   return (
     <div>
       <h3 className="font-playfair text-lg font-semibold text-[#1A1A2E] mb-3 px-1">Choose Your Model</h3>
 
+      {/* Gender toggle */}
+      <div className="flex bg-gray-100 rounded-xl p-1 mb-3 mx-1">
+        <button
+          onClick={() => handleGenderSwitch('female')}
+          className={`flex-1 py-2 rounded-lg text-sm font-dm font-semibold transition-all ${
+            gender === 'female' ? 'bg-[#1A1A2E] text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Women
+        </button>
+        <button
+          onClick={() => handleGenderSwitch('male')}
+          className={`flex-1 py-2 rounded-lg text-sm font-dm font-semibold transition-all ${
+            gender === 'male' ? 'bg-[#1A1A2E] text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Men
+        </button>
+      </div>
+
       {/* Filter bar */}
       <div className="flex gap-2 overflow-x-auto pb-2 px-1 mb-3" style={{ scrollbarWidth: 'none' }}>
-        {FILTERS.map(f => (
+        {filters.map(f => (
           <button
             key={f}
             onClick={() => setActiveFilter(f)}
