@@ -11,7 +11,29 @@ Deno.serve(async (req) => {
       return Response.json({ error: "FASHN_API_KEY not set" }, { status: 500 });
     }
 
-    if (action === "run") {
+    if (action === "get_tryon_link") {
+      const { unique_code } = payload;
+      const links = await base44.asServiceRole.entities.TryOnLink.filter({ unique_code });
+      if (!links || links.length === 0) {
+        return Response.json({ error: "not_found" }, { status: 404 });
+      }
+      const link = links[0];
+      // Increment view count
+      await base44.asServiceRole.entities.TryOnLink.update(link.id, { views_count: (link.views_count || 0) + 1 });
+      return Response.json({ link });
+
+    } else if (action === "save_tryon") {
+      const { tryon_link_id, customer_image_url, result_image_url, completions_count } = payload;
+      await base44.asServiceRole.entities.CustomerTryOn.create({
+        tryon_link_id,
+        customer_image_url,
+        result_image_url,
+        status: 'completed'
+      });
+      await base44.asServiceRole.entities.TryOnLink.update(tryon_link_id, { completions_count });
+      return Response.json({ ok: true });
+
+    } else if (action === "run") {
       const { model_image, garment_image, category } = payload;
       const requestBody = {
         model_name: "tryon-v1.6",
