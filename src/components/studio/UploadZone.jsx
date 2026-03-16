@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Camera, ImagePlus } from 'lucide-react';
+import { Camera, ImagePlus, AlertCircle } from 'lucide-react';
 
 async function convertToJpg(file) {
   // If already a JPEG, skip conversion
