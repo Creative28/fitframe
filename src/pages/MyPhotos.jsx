@@ -133,6 +133,45 @@ export default function MyPhotos() {
         )}
       </div>
     </div>
+
+      {/* Try-On Link Modal */}
+      {tryOnUrl && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-end justify-center sm:items-center px-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 pb-10">
+            <h2 className="font-playfair text-xl font-bold text-[#1A1A2E] mb-1">✅ Try-On Link Ready!</h2>
+            <p className="text-sm font-dm text-gray-500 mb-4">Copy the link below and send it to your customer via WhatsApp, DM, or anywhere.</p>
+            <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 mb-4">
+              <span className="text-xs font-dm text-gray-700 break-all flex-1">{tryOnUrl}</span>
+            </div>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(tryOnUrl).catch(() => {});
+                  toast({ title: 'Copied!', description: 'Link copied to clipboard' });
+                }}
+                className="w-full py-3.5 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold text-sm"
+              >
+                📋 Copy Link
+              </button>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent('Try on this item: ' + tryOnUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3.5 bg-[#25D366] text-white rounded-2xl font-dm font-semibold text-sm text-center"
+              >
+                💬 Share via WhatsApp
+              </a>
+              <button
+                onClick={() => setTryOnUrl(null)}
+                className="w-full py-3 text-gray-400 font-dm text-sm"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
