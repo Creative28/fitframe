@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import GeneratingProgress from '@/components/studio/GeneratingProgress';
@@ -7,12 +6,12 @@ import CreditsModal from '@/components/studio/CreditsModal';
 import MultiUploadZone from '@/components/bulk/MultiUploadZone';
 import GarmentQueueCard from '@/components/bulk/GarmentQueueCard';
 import GenerateDrawer from '@/components/bulk/GenerateDrawer';
-import { ImagePlus, Sparkles, Layers } from 'lucide-react';
+import { ImagePlus, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { compressImage, isHeic } from '@/lib/compressImage';
 
 export default function BulkStudio() {
-  const navigate = useNavigate();
-  const [garments, setGarments] = useState([]); // { id, file_url, status, result_url }
+  const [garments, setGarments] = useState([]);
   const [selectedGarment, setSelectedGarment] = useState(null);
   const [activeGeneratingId, setActiveGeneratingId] = useState(null);
   const [credits, setCredits] = useState(null);
@@ -24,14 +23,23 @@ export default function BulkStudio() {
     }).catch(() => {});
   }, []);
 
-  const handleFilesUploaded = (uploaded) => {
-    const newGarments = uploaded.map(({ file_url }) => ({
-      id: Math.random().toString(36).slice(2),
-      file_url,
-      status: 'pending',
-      result_url: null,
-    }));
-    setGarments(prev => [...prev, ...newGarments]);
+  // Called by MultiUploadZone:
+  // - Initially with array of new items (uploadStatus: 'uploading', preview set)
+  // - Per-item updates when upload completes (uploadStatus: 'done'/'error', file_url set)
+  const handleFilesUploaded = (updates) => {
+    setGarments(prev => {
+      const map = new Map(prev.map(g => [g.id, g]));
+      for (const item of updates) {
+        if (map.has(item.id)) {
+          // Update existing item
+          map.set(item.id, { ...map.get(item.id), ...item });
+        } else {
+          // New item — add with genStatus
+          map.set(item.id, { ...item, genStatus: 'pending', result_url: null });
+        }
+      }
+      return Array.from(map.values());
+    });
   };
 
   const handleDelete = (id) => {
@@ -44,18 +52,17 @@ export default function BulkStudio() {
       setShowCreditsModal(true);
       return;
     }
+    if (!garment.file_url) return; // still uploading
 
     setSelectedGarment(null);
     setActiveGeneratingId(garment.id);
-    setGarments(prev => prev.map(g => g.id === garment.id ? { ...g, status: 'processing' } : g));
+    setGarments(prev => prev.map(g => g.id === garment.id ? { ...g, genStatus: 'processing' } : g));
 
-    // Create garment record
     const garmentRecord = await base44.entities.Garment.create({
       original_image_url: garment.file_url,
       category: 'tops',
     });
 
-    // Create generation record
     const generation = await base44.entities.Generation.create({
       garment_id: garmentRecord.id,
       model_id: model.id,
@@ -63,7 +70,6 @@ export default function BulkStudio() {
       status: 'pending',
     });
 
-    // Call FASHN API
     const res = await base44.functions.invoke('fashnApi', {
       action: 'run',
       payload: {
@@ -74,13 +80,8 @@ export default function BulkStudio() {
     });
 
     const predictionId = res.data?.prediction_id;
+    await base44.entities.Generation.update(generation.id, { prediction_id: predictionId, status: 'processing' });
 
-    await base44.entities.Generation.update(generation.id, {
-      prediction_id: predictionId,
-      status: 'processing',
-    });
-
-    // Poll for result
     let result = null;
     for (let i = 0; i < 60; i++) {
       await new Promise(r => setTimeout(r, 1000));
@@ -95,12 +96,7 @@ export default function BulkStudio() {
     if (result?.output?.[0]) {
       const resultUrl = result.output[0];
 
-      await base44.entities.Generation.update(generation.id, {
-        result_image_url: resultUrl,
-        status: 'completed',
-      });
-
-      // Save to Photo library
+      await base44.entities.Generation.update(generation.id, { result_image_url: resultUrl, status: 'completed' });
       await base44.entities.Photo.create({
         garment_image_url: garment.file_url,
         generated_image_url: resultUrl,
@@ -112,34 +108,30 @@ export default function BulkStudio() {
         category: 'tops',
       });
 
-      // Deduct credit
       if (credits !== null) {
         const newCredits = Math.max(0, credits - 1);
         await base44.auth.updateMe({ credits_remaining: newCredits });
         await base44.entities.CreditTransaction.create({
-          amount: -1,
-          type: 'generation',
-          description: 'Bulk model photo generation',
-          generation_id: generation.id,
+          amount: -1, type: 'generation', description: 'Bulk model photo generation', generation_id: generation.id,
         });
         setCredits(newCredits);
       }
 
       setGarments(prev => prev.map(g =>
-        g.id === garment.id ? { ...g, status: 'completed', result_url: resultUrl } : g
+        g.id === garment.id ? { ...g, genStatus: 'completed', result_url: resultUrl } : g
       ));
     } else {
       await base44.entities.Generation.update(generation.id, { status: 'failed' });
       setGarments(prev => prev.map(g =>
-        g.id === garment.id ? { ...g, status: 'failed' } : g
+        g.id === garment.id ? { ...g, genStatus: 'failed' } : g
       ));
     }
 
     setActiveGeneratingId(null);
   };
 
-  const pendingCount = garments.filter(g => g.status === 'pending').length;
-  const doneCount = garments.filter(g => g.status === 'completed').length;
+  const pendingCount = garments.filter(g => g.genStatus === 'pending').length;
+  const doneCount = garments.filter(g => g.genStatus === 'completed').length;
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] pb-28">
@@ -164,11 +156,8 @@ export default function BulkStudio() {
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
-
-        {/* Upload zone */}
         <MultiUploadZone onFilesUploaded={handleFilesUploaded} />
 
-        {/* Queue stats */}
         {garments.length > 0 && (
           <div className="flex items-center justify-between">
             <p className="font-playfair text-lg font-bold text-[#1A1A2E]">
@@ -181,7 +170,6 @@ export default function BulkStudio() {
           </div>
         )}
 
-        {/* Garment grid */}
         {garments.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
             {garments.map(g => (
@@ -189,7 +177,11 @@ export default function BulkStudio() {
                 key={g.id}
                 garment={g}
                 isSelected={selectedGarment?.id === g.id}
-                onSelect={setSelectedGarment}
+                onSelect={(item) => {
+                  if (item.uploadStatus !== 'done' && item.file_url) return;
+                  if (item.uploadStatus === 'done') setSelectedGarment(item);
+                  else if (!item.uploadStatus) setSelectedGarment(item); // legacy shape
+                }}
                 onDelete={handleDelete}
               />
             ))}
@@ -202,15 +194,46 @@ export default function BulkStudio() {
                 input.type = 'file';
                 input.accept = 'image/*';
                 input.multiple = true;
-                input.onchange = async (e) => {
-                  const files = Array.from(e.target.files || []).slice(0, 30);
-                  if (!files.length) return;
-                  const uploaded = [];
-                  for (const file of files) {
-                    const result = await base44.integrations.Core.UploadFile({ file });
-                    uploaded.push({ file_url: result.file_url });
+                input.onchange = (e) => {
+                  const files = e.target.files;
+                  if (files?.length) {
+                    // Re-use MultiUploadZone logic via a synthetic event isn't easy,
+                    // so we do it inline here (same compression pipeline)
+                    const fileArr = Array.from(files).slice(0, 30);
+                    const items = fileArr.map(file => ({
+                      id: Math.random().toString(36).slice(2),
+                      file,
+                      preview: URL.createObjectURL(file),
+                      uploadStatus: 'uploading',
+                      file_url: null,
+                    }));
+                    handleFilesUploaded(items);
+                    // Upload in background
+                    const CONCURRENCY = 3;
+                    const queue = [...items];
+                    const runNext = async () => {
+                      if (queue.length === 0) return;
+                      const item = queue.shift();
+                      try {
+                        const compressed = await compressImage(item.file);
+                        let file_url;
+                        if (isHeic(item.file)) {
+                          const formData = new FormData();
+                          formData.append('file', item.file);
+                          const response = await base44.functions.invoke('convertImage', formData);
+                          file_url = response.data.file_url;
+                        } else {
+                          const result = await base44.integrations.Core.UploadFile({ file: compressed });
+                          file_url = result.file_url;
+                        }
+                        handleFilesUploaded([{ ...item, uploadStatus: 'done', file_url }]);
+                      } catch {
+                        handleFilesUploaded([{ ...item, uploadStatus: 'error' }]);
+                      }
+                      await runNext();
+                    };
+                    for (let i = 0; i < Math.min(CONCURRENCY, items.length); i++) runNext();
                   }
-                  handleFilesUploaded(uploaded);
                 };
                 input.click();
               }}
@@ -221,15 +244,13 @@ export default function BulkStudio() {
           </div>
         )}
 
-        {/* Empty state prompt */}
         {garments.length === 0 && (
-          <div className="text-center py-4">
-            <p className="text-sm font-dm text-gray-400">Upload garment images to get started. You can process them one by one.</p>
-          </div>
+          <p className="text-center text-sm font-dm text-gray-400 py-4">
+            Upload garment images to get started. You can process them one by one.
+          </p>
         )}
       </div>
 
-      {/* Generate drawer */}
       {selectedGarment && (
         <GenerateDrawer
           garment={selectedGarment}
