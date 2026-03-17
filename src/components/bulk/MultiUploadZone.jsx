@@ -1,44 +1,62 @@
 import { useRef, useState } from 'react';
-import { ImagePlus, Loader2 } from 'lucide-react';
+import { ImagePlus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { compressImage, getLocalPreview, isHeic } from '@/lib/compressImage';
+
+const CONCURRENCY = 3;
+
+async function uploadFile(file) {
+  const toUpload = await compressImage(file);
+  if (isHeic(file)) {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await base44.functions.invoke('convertImage', formData);
+    return response.data.file_url;
+  } else {
+    const result = await base44.integrations.Core.UploadFile({ file: toUpload });
+    return result.file_url;
+  }
+}
 
 export default function MultiUploadZone({ onFilesUploaded }) {
   const inputRef = useRef(null);
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState({ done: 0, total: 0 });
 
   const handleFiles = async (files) => {
     if (!files || files.length === 0) return;
     const fileArr = Array.from(files).slice(0, 30);
-    setUploading(true);
-    setProgress({ done: 0, total: fileArr.length });
 
-    const uploaded = [];
-    for (let i = 0; i < fileArr.length; i++) {
-      const file = fileArr[i];
-      const fileName = file.name || '';
-      const mimeType = file.type || '';
-      const isHeic =
-        mimeType === 'image/heic' || mimeType === 'image/heif' ||
-        fileName.toLowerCase().endsWith('.heic') || fileName.toLowerCase().endsWith('.heif');
+    // Instantly add all items to queue with local previews & 'uploading' status
+    const items = fileArr.map(file => ({
+      id: Math.random().toString(36).slice(2),
+      file,
+      preview: getLocalPreview(file),
+      status: 'uploading', // uploading | done | error
+      file_url: null,
+    }));
 
-      let file_url;
-      if (isHeic) {
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await base44.functions.invoke('convertImage', formData);
-        file_url = response.data.file_url;
-      } else {
-        const result = await base44.integrations.Core.UploadFile({ file });
-        file_url = result.file_url;
+    onFilesUploaded(items); // pass immediately so cards appear in grid
+
+    // Upload in parallel batches of CONCURRENCY
+    const queue = [...items];
+    const inFlight = [];
+
+    const runNext = async () => {
+      if (queue.length === 0) return;
+      const item = queue.shift();
+      try {
+        const file_url = await uploadFile(item.file);
+        onFilesUploaded([{ ...item, status: 'done', file_url }]);
+      } catch {
+        onFilesUploaded([{ ...item, status: 'error', file_url: null }]);
       }
+      await runNext();
+    };
 
-      uploaded.push({ file, file_url });
-      setProgress({ done: i + 1, total: fileArr.length });
+    for (let i = 0; i < Math.min(CONCURRENCY, items.length); i++) {
+      inFlight.push(runNext());
     }
 
-    setUploading(false);
-    onFilesUploaded(uploaded);
+    await Promise.all(inFlight);
   };
 
   const handleChange = (e) => {
@@ -51,26 +69,9 @@ export default function MultiUploadZone({ onFilesUploaded }) {
     handleFiles(e.dataTransfer.files);
   };
 
-  if (uploading) {
-    return (
-      <div className="flex flex-col items-center justify-center border-2 border-dashed border-[#E8B86D]/50 rounded-2xl bg-white p-10 gap-4 min-h-[200px]">
-        <Loader2 size={36} className="text-[#E8B86D] animate-spin" />
-        <p className="font-dm text-sm text-gray-500">
-          Uploading {progress.done} / {progress.total}…
-        </p>
-        <div className="w-48 h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#E8B86D] rounded-full transition-all"
-            style={{ width: `${(progress.done / progress.total) * 100}%` }}
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
-      className="flex flex-col items-center justify-center border-2 border-dashed border-[#E8B86D]/50 rounded-2xl bg-white cursor-pointer hover:border-[#E8B86D] transition-colors p-10 gap-4 min-h-[200px]"
+      className="flex flex-col items-center justify-center border-2 border-dashed border-[#E8B86D]/50 rounded-2xl bg-white cursor-pointer hover:border-[#E8B86D] transition-colors p-10 gap-4 min-h-[180px]"
       onClick={() => inputRef.current?.click()}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}

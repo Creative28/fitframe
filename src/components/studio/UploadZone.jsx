@@ -1,37 +1,36 @@
 import { useRef, useState } from 'react';
-import { Camera, ImagePlus } from 'lucide-react';
+import { Camera, ImagePlus, CheckCircle2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { compressImage, getLocalPreview, isHeic } from '@/lib/compressImage';
 
 export default function UploadZone({ onFileSelect }) {
   const inputRef = useRef(null);
-  const [preparing, setPreparing] = useState(false);
+  // uploadState: null | 'uploading' | 'done'
+  const [uploadState, setUploadState] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const handleFile = async (file) => {
-    setPreparing(true);
+    // 1. Show instant local preview
+    const localUrl = getLocalPreview(file);
+    setPreviewUrl(localUrl);
+    setUploadState('uploading');
 
-    const fileName = file.name || '';
-    const mimeType = file.type || '';
-    const isHeic =
-      mimeType === 'image/heic' ||
-      mimeType === 'image/heif' ||
-      fileName.toLowerCase().endsWith('.heic') ||
-      fileName.toLowerCase().endsWith('.heif');
+    // 2. Compress (skip for HEIC)
+    const toUpload = await compressImage(file);
 
+    // 3. Upload in background
     let file_url;
-
-    if (isHeic) {
-      // HEIC: must go through backend for Cloudinary conversion
+    if (isHeic(file)) {
       const formData = new FormData();
       formData.append('file', file);
       const response = await base44.functions.invoke('convertImage', formData);
       file_url = response.data.file_url;
     } else {
-      // JPG/PNG/etc: upload directly from browser — much faster
-      const result = await base44.integrations.Core.UploadFile({ file });
+      const result = await base44.integrations.Core.UploadFile({ file: toUpload });
       file_url = result.file_url;
     }
 
-    setPreparing(false);
+    setUploadState('done');
     onFileSelect(file, file_url);
   };
 
@@ -46,11 +45,22 @@ export default function UploadZone({ onFileSelect }) {
     if (file) handleFile(file);
   };
 
-  if (preparing) {
+  // Uploading state: show preview with overlay
+  if (previewUrl) {
     return (
-      <div className="flex flex-col items-center justify-center border-2 border-dashed border-[#E8B86D]/50 rounded-2xl bg-white p-10 gap-4 min-h-[240px]">
-        <div className="w-10 h-10 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
-        <p className="font-dm text-sm text-gray-500">Preparing your photo...</p>
+      <div className="relative rounded-2xl overflow-hidden border-2 border-[#E8B86D]/50 bg-white" style={{ aspectRatio: '4/3' }}>
+        <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+        {uploadState === 'uploading' && (
+          <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center gap-2">
+            <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+            <p className="text-white text-xs font-dm font-medium">Uploading…</p>
+          </div>
+        )}
+        {uploadState === 'done' && (
+          <div className="absolute top-3 right-3 bg-green-500 text-white rounded-full p-1">
+            <CheckCircle2 size={16} />
+          </div>
+        )}
       </div>
     );
   }
