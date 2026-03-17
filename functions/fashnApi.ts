@@ -1,10 +1,21 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
+// Public actions that don't require login (used by customer try-on page)
+const PUBLIC_ACTIONS = ['run', 'status', 'get_tryon_link', 'save_tryon'];
+
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
+    const base44 = createClientFromRequest(req, { allowUnauthenticated: true });
     const body = await req.json();
     const { action, payload } = body;
+
+    // For non-public actions, require authentication
+    if (!PUBLIC_ACTIONS.includes(action)) {
+      const user = await base44.auth.me();
+      if (!user) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
 
     const FASHN_API_KEY = Deno.env.get("FASHN_API_KEY");
     if (!FASHN_API_KEY) {
