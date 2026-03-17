@@ -75,8 +75,12 @@ export default function MyPhotos() {
       is_active: true,
     });
     const url = `${window.location.origin}/try/${code}`;
-    navigator.clipboard.writeText(url);
-    toast({ title: '✅ Link copied!', description: url });
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({ title: '✅ Link copied!', description: url });
+    } catch {
+      toast({ title: '✅ Try-on link created!', description: url });
+    }
   };
 
   if (loading) {
