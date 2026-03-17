@@ -1,6 +1,6 @@
 export default function TryOnDemo() {
   const sellerPhoto = 'https://media.base44.com/images/public/69b7303524165a13c96d4537/ee1c7856b_generated_image.png';
-  const customerPhoto = 'https://media.base44.com/images/public/69b7303524165a13c96d4537/0721b3aa5_generated_image.png';
+  const customerPhoto = 'https://media.base44.com/images/public/69b7303524165a13c96d4537/d5859c75c_generated_image.png';
 
   return (
     <div className="w-full py-4">
