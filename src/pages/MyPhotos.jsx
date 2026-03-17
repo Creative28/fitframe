@@ -86,6 +86,7 @@ export default function MyPhotos() {
   };
 
   if (loading) {
+
     return (
       <div className="min-h-screen bg-[#FAFAF8]">
         <AppHeader title="My Photos" />
