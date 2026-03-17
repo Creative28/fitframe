@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
-import { Sparkles, CreditCard, LogOut, ChevronRight, Store, User, Check, Bell } from 'lucide-react';
+import { LogOut, ChevronRight, Store, Bell } from 'lucide-react';
 import CreditsModal from '@/components/studio/CreditsModal';
-
-const PLAN_LABELS = { free: 'Free', starter: 'Starter', growth: 'Growth', pro: 'Pro' };
-const PLAN_COLORS = { free: 'bg-gray-100 text-gray-600', starter: 'bg-blue-100 text-blue-700', growth: 'bg-[#E8B86D]/20 text-[#1A1A2E]', pro: 'bg-[#1A1A2E] text-white' };
+import TopUpModal from '@/components/studio/TopUpModal';
+import GenerationsCard from '@/components/account/GenerationsCard';
 
 export default function Account() {
   const [user, setUser] = useState(null);
@@ -14,6 +13,7 @@ export default function Account() {
   const [businessName, setBusinessName] = useState('');
   const [saving, setSaving] = useState(false);
   const [showCreditsModal, setShowCreditsModal] = useState(false);
+  const [showTopUpModal, setShowTopUpModal] = useState(false);
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
@@ -21,7 +21,6 @@ export default function Account() {
   }, []);
 
   useEffect(() => {
-    // Handle unsubscribe via URL param
     const params = new URLSearchParams(window.location.search);
     if (params.get('unsubscribe') === '1') {
       base44.auth.me().then(u => {
@@ -60,6 +59,11 @@ export default function Account() {
     }
   };
 
+  const handleTopUpSuccess = async () => {
+    const u = await base44.auth.me();
+    setUser(u);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAFAF8]">
@@ -70,9 +74,6 @@ export default function Account() {
       </div>
     );
   }
-
-  const credits = user?.credits_remaining ?? 5;
-  const plan = user?.plan || 'free';
 
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
@@ -124,27 +125,12 @@ export default function Account() {
           )}
         </div>
 
-        {/* Credits */}
-        <div className="bg-[#1A1A2E] rounded-2xl p-5 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="font-dm text-sm text-white/60">Credits remaining</p>
-              <div className="flex items-center gap-2 mt-1">
-                <Sparkles size={18} className="text-[#E8B86D]" />
-                <span className="font-playfair text-3xl font-bold">{credits}</span>
-              </div>
-            </div>
-            <span className={`px-3 py-1.5 rounded-full text-sm font-dm font-semibold ${PLAN_COLORS[plan]}`}>
-              {PLAN_LABELS[plan]}
-            </span>
-          </div>
-          <button
-            onClick={() => setShowCreditsModal(true)}
-            className="w-full py-3 bg-[#E8B86D] text-[#1A1A2E] rounded-xl font-dm font-semibold text-sm hover:bg-[#d4a55e] transition-colors"
-          >
-            Upgrade Plan
-          </button>
-        </div>
+        {/* Generations card */}
+        <GenerationsCard
+          user={user}
+          onUpgrade={() => setShowCreditsModal(true)}
+          onTopUp={() => setShowTopUpModal(true)}
+        />
 
         {/* Credit history */}
         {transactions.length > 0 && (
@@ -201,6 +187,12 @@ export default function Account() {
       </div>
 
       {showCreditsModal && <CreditsModal onClose={() => setShowCreditsModal(false)} />}
+      {showTopUpModal && (
+        <TopUpModal
+          onClose={() => setShowTopUpModal(false)}
+          onSuccess={handleTopUpSuccess}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,7 @@
-import { Sparkles, X } from 'lucide-react';
+import { useState } from 'react';
+import { Sparkles, X, Package } from 'lucide-react';
+import TopUpModal from './TopUpModal';
+import { daysUntilReset, nextResetLabel, PLAN_MONTHLY_CREDITS } from '@/lib/creditUtils';
 
 const PLANS = [
   { name: 'Starter', price: 19, credits: 30, features: ['30 credits/mo', 'HD downloads', 'Email support'] },
@@ -6,18 +9,58 @@ const PLANS = [
   { name: 'Pro', price: 99, credits: '∞', features: ['Unlimited everything', 'API access', 'Dedicated support'] },
 ];
 
-export default function CreditsModal({ onClose }) {
+export default function CreditsModal({ onClose, user }) {
+  const [showTopUp, setShowTopUp] = useState(false);
+  const days = daysUntilReset();
+  const resetLabel = nextResetLabel();
+  const plan = user?.plan || 'free';
+  const monthlyTotal = PLAN_MONTHLY_CREDITS[plan];
+  const isPro = plan === 'pro';
+
+  if (showTopUp) {
+    return <TopUpModal onClose={onClose} onSuccess={onClose} />;
+  }
+
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center sm:items-center px-4">
       <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-lg p-6 pb-10">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <h2 className="font-playfair text-2xl font-bold text-[#1A1A2E]">You're out of credits</h2>
-            <p className="text-gray-500 font-dm text-sm mt-1">Upgrade to keep generating</p>
+            <h2 className="font-playfair text-2xl font-bold text-[#1A1A2E]">
+              {isPro ? 'You're on Pro' : 'You're out of generations'}
+            </h2>
+            <p className="text-gray-500 font-dm text-sm mt-1">
+              {isPro
+                ? 'Unlimited generations every month.'
+                : `${!isPro && monthlyTotal !== Infinity ? monthlyTotal : ''} fresh generations reset in ${days} days on ${resetLabel}.`}
+            </p>
           </div>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100">
             <X size={20} />
           </button>
+        </div>
+
+        {/* Top-up option at top */}
+        {!isPro && (
+          <button
+            onClick={() => setShowTopUp(true)}
+            className="w-full mt-4 flex items-center justify-between px-4 py-3.5 bg-[#E8B86D]/10 border-2 border-[#E8B86D]/40 rounded-2xl hover:bg-[#E8B86D]/20 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <Package size={18} className="text-[#E8B86D]" />
+              <div className="text-left">
+                <p className="font-dm font-semibold text-[#1A1A2E] text-sm">Buy a top-up pack</p>
+                <p className="font-dm text-xs text-gray-500">10, 30, or 100 generations — never expire</p>
+              </div>
+            </div>
+            <span className="font-dm font-bold text-[#1A1A2E] text-sm">From $5 →</span>
+          </button>
+        )}
+
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 h-px bg-gray-100" />
+          <span className="text-xs font-dm text-gray-400">or upgrade your plan</span>
+          <div className="flex-1 h-px bg-gray-100" />
         </div>
 
         <div className="flex flex-col gap-3">
