@@ -96,7 +96,7 @@ export default function CustomerTryOn() {
 
     } catch (e) {
       console.error(e);
-      alert('Could not process your photo. Please try again with a clearer, well-lit photo.');
+      alert('Something went wrong generating your try-on. Please try again.');
       setStep('upload');
     } finally {
       setProcessing(false);
