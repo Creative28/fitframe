@@ -38,9 +38,7 @@ export default function UploadZone({ onFileSelect }) {
     // 4. Upload
     let file_url;
     if (isHeic(file)) {
-      const formData = new FormData();
-      formData.append('file', file);
-      const response = await base44.functions.invoke('convertImage', formData);
+      const response = await base44.functions.invoke('convertImage', { file });
       file_url = response.data.file_url;
     } else {
       const result = await base44.integrations.Core.UploadFile({ file: toUpload });
