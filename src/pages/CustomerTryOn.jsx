@@ -64,7 +64,7 @@ export default function CustomerTryOn() {
       // Poll
       let resultImageUrl = null;
       const start = Date.now();
-      while (Date.now() - start < 30000) {
+      while (Date.now() - start < 90000) {
         await new Promise(r => setTimeout(r, 2000));
         const statusRes = await base44.functions.invoke('fashnApi', {
           action: 'status',
