@@ -27,12 +27,12 @@ export default function CreditsModal({ onClose, user }) {
         <div className="flex items-center justify-between mb-2">
           <div>
             <h2 className="font-playfair text-2xl font-bold text-[#1A1A2E]">
-              {isPro ? 'You're on Pro' : 'You're out of generations'}
+              {isPro ? "You're on Pro" : "You're out of generations"}
             </h2>
             <p className="text-gray-500 font-dm text-sm mt-1">
               {isPro
                 ? 'Unlimited generations every month.'
-                : `${!isPro && monthlyTotal !== Infinity ? monthlyTotal : ''} fresh generations reset in ${days} days on ${resetLabel}.`}
+                : `${(!isPro && monthlyTotal !== Infinity) ? monthlyTotal : ''} fresh generations reset in ${days} days on ${resetLabel}.`}
             </p>
           </div>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100">
