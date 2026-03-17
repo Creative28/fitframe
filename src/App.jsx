@@ -6,6 +6,8 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import AppLayout from '@/components/layout/AppLayout';
+import { ChatProvider } from '@/lib/ChatContext';
+import ChatBubble from '@/components/chat/ChatBubble';
 
 // Pages
 import Landing from './pages/Landing';
@@ -42,8 +44,8 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       {/* Public pages */}
-      <Route path="/" element={<Landing />} />
-      <Route path="/Landing" element={<Landing />} />
+      <Route path="/" element={<><Landing /><ChatBubble /></>} />
+      <Route path="/Landing" element={<><Landing /><ChatBubble /></>} />
       <Route path="/try/:code" element={<CustomerTryOn />} />
 
       {/* Authenticated app shell */}
@@ -66,10 +68,12 @@ function App() {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <AuthenticatedApp />
-        </Router>
-        <Toaster />
+        <ChatProvider>
+          <Router>
+            <AuthenticatedApp />
+          </Router>
+          <Toaster />
+        </ChatProvider>
       </QueryClientProvider>
     </AuthProvider>
   )
