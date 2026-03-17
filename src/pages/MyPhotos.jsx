@@ -11,6 +11,7 @@ export default function MyPhotos() {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+  const [tryOnUrl, setTryOnUrl] = useState(null);
 
   useEffect(() => {
     loadPhotos();
