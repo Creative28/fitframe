@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { Camera, ImagePlus, CheckCircle2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { compressImage, getLocalPreview, isHeic } from '@/lib/compressImage';
+import { getBackendUrl } from '@/lib/app-params';
 
 // uploadState: null | 'preparing' | 'uploading' | 'done'
 const STATE_LABELS = {
