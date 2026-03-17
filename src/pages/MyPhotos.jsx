@@ -132,7 +132,6 @@ export default function MyPhotos() {
           </>
         )}
       </div>
-    </div>
 
       {/* Try-On Link Modal */}
       {tryOnUrl && (
