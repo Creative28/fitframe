@@ -178,9 +178,8 @@ export default function BulkStudio() {
                 garment={g}
                 isSelected={selectedGarment?.id === g.id}
                 onSelect={(item) => {
-                  if (item.uploadStatus !== 'done' && item.file_url) return;
-                  if (item.uploadStatus === 'done') setSelectedGarment(item);
-                  else if (!item.uploadStatus) setSelectedGarment(item); // legacy shape
+                  if (item.uploadStatus === 'uploading') return; // still uploading
+                  setSelectedGarment(item);
                 }}
                 onDelete={handleDelete}
               />
