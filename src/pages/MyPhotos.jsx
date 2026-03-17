@@ -77,10 +77,11 @@ export default function MyPhotos() {
     const url = `${window.location.origin}/try/${code}`;
     try {
       await navigator.clipboard.writeText(url);
-      toast({ title: '✅ Link copied!', description: url });
     } catch {
-      toast({ title: '✅ Try-on link created!', description: url });
+      // clipboard may be unavailable
     }
+    // Show modal with the URL so user can manually copy/share
+    setTryOnUrl(url);
   };
 
   if (loading) {
