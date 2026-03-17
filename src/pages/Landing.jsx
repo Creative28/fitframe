@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight, Upload, Cpu, Download, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import BeforeAfterCarousel from '@/components/landing/BeforeAfterCarousel';
+import TryOnDemo from '@/components/landing/TryOnDemo';
 import MarqueeStrip from '@/components/landing/MarqueeStrip';
 import SocialProof from '@/components/landing/SocialProof';
 
@@ -100,7 +101,8 @@ export default function Landing() {
       {/* Customer Try-On feature */}
       <section className="px-6 py-16 bg-[#FAFAF8]">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-[#1A1A2E] rounded-3xl p-8 sm:p-12 text-white text-center">
+          {/* Header card */}
+          <div className="bg-[#1A1A2E] rounded-3xl p-8 sm:p-10 text-white text-center mb-2">
             <div className="text-4xl mb-4">🔗</div>
             <h2 className="font-playfair text-3xl font-bold mb-4">For your customers too</h2>
             <p className="text-white/70 text-lg max-w-lg mx-auto mb-6 leading-relaxed">
@@ -115,6 +117,9 @@ export default function Landing() {
               ))}
             </div>
           </div>
+
+          {/* Live demo visual */}
+          <TryOnDemo />
         </div>
       </section>
 
