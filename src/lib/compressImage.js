@@ -16,7 +16,7 @@ export function isHeic(file) {
     name.endsWith('.heic') || name.endsWith('.heif');
 }
 
-export async function compressImage(file, { maxDim = 1400, quality = 0.75 } = {}) {
+export async function compressImage(file, { maxDim = 1600, quality = 0.78 } = {}) {
   // HEIC must go through backend — skip compression
   if (isHeic(file)) return file;
 

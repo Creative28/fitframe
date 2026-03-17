@@ -3,22 +3,39 @@ import { Camera, ImagePlus, CheckCircle2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { compressImage, getLocalPreview, isHeic } from '@/lib/compressImage';
 
+// uploadState: null | 'preparing' | 'uploading' | 'done'
+const STATE_LABELS = {
+  preparing: 'Preparing image…',
+  uploading: 'Uploading…',
+  done: 'Ready to generate ✓',
+};
+
 export default function UploadZone({ onFileSelect }) {
   const inputRef = useRef(null);
-  // uploadState: null | 'uploading' | 'done'
   const [uploadState, setUploadState] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  // 0–100 fake progress for uploading phase
+  const [progress, setProgress] = useState(0);
 
   const handleFile = async (file) => {
-    // 1. Show instant local preview
+    // 1. Instant local preview
     const localUrl = getLocalPreview(file);
     setPreviewUrl(localUrl);
+    setUploadState('preparing');
+    setProgress(0);
+
+    // 2. Compress on client (skip for HEIC — goes through Cloudinary)
+    const toUpload = isHeic(file) ? file : await compressImage(file);
+
+    // 3. Start animated progress bar
     setUploadState('uploading');
+    let fakeProgress = 0;
+    const ticker = setInterval(() => {
+      fakeProgress = Math.min(fakeProgress + 6, 88);
+      setProgress(fakeProgress);
+    }, 200);
 
-    // 2. Compress (skip for HEIC)
-    const toUpload = await compressImage(file);
-
-    // 3. Upload in background
+    // 4. Upload
     let file_url;
     if (isHeic(file)) {
       const formData = new FormData();
@@ -30,6 +47,8 @@ export default function UploadZone({ onFileSelect }) {
       file_url = result.file_url;
     }
 
+    clearInterval(ticker);
+    setProgress(100);
     setUploadState('done');
     onFileSelect(file, file_url);
   };
@@ -45,22 +64,29 @@ export default function UploadZone({ onFileSelect }) {
     if (file) handleFile(file);
   };
 
-  // Uploading state: show preview with overlay
   if (previewUrl) {
+    const isDone = uploadState === 'done';
     return (
       <div className="relative rounded-2xl overflow-hidden border-2 border-[#E8B86D]/50 bg-white" style={{ aspectRatio: '4/3' }}>
         <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-        {uploadState === 'uploading' && (
-          <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center gap-2">
-            <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-            <p className="text-white text-xs font-dm font-medium">Uploading…</p>
+
+        {/* Status overlay — subtle, non-blocking */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 pb-3 pt-6">
+          <div className="flex items-center justify-between mb-1.5">
+            <p className={`text-xs font-dm font-semibold ${isDone ? 'text-green-400' : 'text-white'}`}>
+              {STATE_LABELS[uploadState]}
+            </p>
+            {isDone && <CheckCircle2 size={15} className="text-green-400" />}
           </div>
-        )}
-        {uploadState === 'done' && (
-          <div className="absolute top-3 right-3 bg-green-500 text-white rounded-full p-1">
-            <CheckCircle2 size={16} />
-          </div>
-        )}
+          {!isDone && (
+            <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-[#E8B86D] rounded-full transition-all duration-200"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          )}
+        </div>
       </div>
     );
   }
