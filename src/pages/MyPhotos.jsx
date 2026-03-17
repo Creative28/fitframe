@@ -84,9 +84,7 @@ export default function MyPhotos() {
     // Show modal with the URL so user can manually copy/share
     setTryOnUrl(url);
   };
-
   if (loading) {
-
     return (
       <div className="min-h-screen bg-[#FAFAF8]">
         <AppHeader title="My Photos" />
