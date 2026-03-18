@@ -12,10 +12,13 @@ import { Sparkles, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import GarmentSettings, { buildFitContext, GARMENT_TYPES } from '@/components/studio/GarmentSettings';
 
+const DEV_EMAIL = 'Nisan26ngcr@gmail.com';
+
 export default function Studio() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1); // 1=upload, 2=model, 3=background, 4=generate
   const [garmentFile, setGarmentFile] = useState(null);
+  const [isDevMode, setIsDevMode] = useState(false);
   const [garmentUrl, setGarmentUrl] = useState(null);
   const [garmentData, setGarmentData] = useState({ category: 'tops', color: '' });
   const [selectedModel, setSelectedModel] = useState(null);
