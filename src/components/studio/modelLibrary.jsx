@@ -182,26 +182,7 @@ export const FEMALE_MODELS = [
     view_type: 'Lower Body',
     thumbnail_url: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&h=550&fit=crop&crop=bottom',
   },
-  {
-    id: 'f-regular-lower-street-1',
-    name: 'Alina',
-    gender: 'female',
-    body_type: 'Regular',
-    style: 'Streetwear',
-    age_group: 'Young Adult',
-    view_type: 'Lower Body',
-    thumbnail_url: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=550&fit=crop&crop=bottom',
-  },
-  {
-    id: 'f-athletic-lower-1',
-    name: 'Vera',
-    gender: 'female',
-    body_type: 'Athletic',
-    style: 'Athletic',
-    age_group: 'Young Adult',
-    view_type: 'Lower Body',
-    thumbnail_url: 'https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=400&h=550&fit=crop&crop=bottom',
-  },
+
 ];
 
 export const MALE_MODELS = [
