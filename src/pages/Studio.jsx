@@ -147,8 +147,8 @@ export default function Studio() {
         category: garmentData.category,
       });
 
-      // Deduct credit
-      if (credits !== null) {
+      // Deduct credit (skip for dev mode)
+      if (credits !== null && !isDevMode) {
         const newCredits = Math.max(0, credits - 1);
         await base44.auth.updateMe({ credits_remaining: newCredits });
         await base44.entities.CreditTransaction.create({
