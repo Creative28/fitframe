@@ -47,7 +47,6 @@ Deno.serve(async (req) => {
           category: category || "tops",
           // For hoodies/oversized: use flat_lay_garment mode if available to better preserve shape
           ...(isHoodie && { garment_photo_type: "flat-lay" }),
-          ...(isPreserveFit && { long_top: isHoodie || garment_type === 'jacket' }),
         }
       };
       console.log("[fashnApi] run payload:", JSON.stringify(requestBody));
