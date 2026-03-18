@@ -199,8 +199,10 @@ export default function Studio() {
           {garmentUrl ? (
             <GarmentPreview
               imageUrl={garmentUrl}
-              garmentData={garmentData}
-              onChange={setGarmentData}
+              category={garmentData.category}
+              color={garmentData.color}
+              onCategoryChange={(cat) => setGarmentData(d => ({ ...d, category: cat }))}
+              onColorChange={(color) => setGarmentData(d => ({ ...d, color }))}
               onReplace={() => { setGarmentUrl(null); setGarmentFile(null); setStep(1); }}
             />
           ) : (
