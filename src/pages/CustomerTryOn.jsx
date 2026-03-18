@@ -47,8 +47,18 @@ export default function CustomerTryOn() {
     setProcessing(true);
 
     try {
-      // Upload via backend function to avoid auth requirement on integrations
-      const uploadRes = await base44.functions.invoke('uploadPublicFile', { file });
+      // Convert file to base64 and upload via backend (avoids auth requirement)
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const uploadRes = await base44.functions.invoke('uploadPublicFile', {
+        file_base64: base64,
+        file_name: file.name,
+        file_type: file.type
+      });
       const customerFileUrl = uploadRes.data?.file_url;
       if (!customerFileUrl) throw new Error('Upload failed');
 
