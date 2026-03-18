@@ -36,7 +36,6 @@ Deno.serve(async (req) => {
     const cloudinaryForm = new FormData();
     cloudinaryForm.append('file', file);
     cloudinaryForm.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    cloudinaryForm.append('format', 'jpg');
 
     const cloudRes = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
