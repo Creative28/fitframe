@@ -33,13 +33,21 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true });
 
     } else if (action === "run") {
-      const { model_image, garment_image, category } = payload;
+      const { model_image, garment_image, category, garment_type, fit_mode, fit_context } = payload;
+
+      // Build cover_feet and other hints based on garment type
+      const isHoodie = garment_type === 'hoodie';
+      const isPreserveFit = !fit_mode || fit_mode === 'preserve';
+
       const requestBody = {
         model_name: "tryon-v1.6",
         inputs: {
           model_image,
           garment_image,
-          category: category || "tops"
+          category: category || "tops",
+          // For hoodies/oversized: use flat_lay_garment mode if available to better preserve shape
+          ...(isHoodie && { garment_photo_type: "flat-lay" }),
+          ...(isPreserveFit && { long_top: isHoodie || garment_type === 'jacket' }),
         }
       };
       console.log("[fashnApi] run payload:", JSON.stringify(requestBody));
