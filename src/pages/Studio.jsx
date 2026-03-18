@@ -31,6 +31,9 @@ export default function Studio() {
   useEffect(() => {
     base44.auth.me().then(user => {
       if (user) {
+        if (user.email?.toLowerCase() === DEV_EMAIL.toLowerCase()) {
+          setIsDevMode(true);
+        }
         const c = user.credits_remaining ?? 5;
         setCredits(c);
         // Grant signup bonus if first time
