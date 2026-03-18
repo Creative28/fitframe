@@ -8,8 +8,9 @@ import BackgroundSelector from '@/components/studio/BackgroundSelector';
 import GeneratingProgress from '@/components/studio/GeneratingProgress';
 import CreditsModal from '@/components/studio/CreditsModal';
 import GarmentPreview from '@/components/studio/GarmentPreview';
-import { Sparkles, ChevronDown, ChevronUp, Layers } from 'lucide-react';
+import { Sparkles, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import GarmentSettings, { buildFitContext, GARMENT_TYPES } from '@/components/studio/GarmentSettings';
 
 export default function Studio() {
   const navigate = useNavigate();
