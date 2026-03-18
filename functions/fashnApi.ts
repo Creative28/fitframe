@@ -1,21 +1,10 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
-// Public actions that don't require login (used by customer try-on page)
-const PUBLIC_ACTIONS = ['run', 'status', 'get_tryon_link', 'save_tryon'];
-
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req, { allowUnauthenticated: true });
+    const base44 = createClientFromRequest(req);
     const body = await req.json();
     const { action, payload } = body;
-
-    // For non-public actions, require authentication
-    if (!PUBLIC_ACTIONS.includes(action)) {
-      const user = await base44.auth.me();
-      if (!user) {
-        return Response.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-    }
 
     const FASHN_API_KEY = Deno.env.get("FASHN_API_KEY");
     if (!FASHN_API_KEY) {
@@ -29,7 +18,6 @@ Deno.serve(async (req) => {
         return Response.json({ error: "not_found" }, { status: 404 });
       }
       const link = links[0];
-      // Increment view count
       await base44.asServiceRole.entities.TryOnLink.update(link.id, { views_count: (link.views_count || 0) + 1 });
       return Response.json({ link });
 
@@ -71,7 +59,6 @@ Deno.serve(async (req) => {
       return Response.json({ prediction_id: data.id });
 
     } else if (action === "status") {
-      // Poll for status
       const { prediction_id } = payload;
       const res = await fetch(`https://api.fashn.ai/v1/status/${prediction_id}`, {
         headers: { "Authorization": `Bearer ${FASHN_API_KEY}` }
@@ -83,9 +70,7 @@ Deno.serve(async (req) => {
       return Response.json({ status: data.status, output: data.output || [] });
 
     } else if (action === "remove_background") {
-      // Use InvokeLLM to detect category/color from image
       const { image_url } = payload;
-      // We'll use the base44 integration to analyze the image
       const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
         prompt: `Analyze this clothing item image. Return JSON with:
 - category: one of "tops", "bottoms", "one-pieces" (tops = shirts/blouses/jackets, bottoms = pants/skirts, one-pieces = dresses/jumpsuits/rompers)
@@ -110,6 +95,7 @@ Deno.serve(async (req) => {
     }
 
   } catch (error) {
+    console.error("fashnApi error:", error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
