@@ -201,10 +201,29 @@ export default function Studio() {
           )}
         </div>
 
-        {/* Step 2: Model */}
+        {/* Step 2: Garment Settings */}
         {step >= 2 && (
           <div>
-            <StepLabel number={2} label="Choose a Model" done={!!selectedModel} />
+            <StepLabel number={2} label="Garment Type & Fit" done={step >= 3} />
+            <GarmentSettings
+              settings={garmentSettings}
+              onChange={(s) => { setGarmentSettings(s); if (step === 2) setStep(3); }}
+            />
+            {step === 2 && (
+              <button
+                onClick={() => setStep(3)}
+                className="mt-4 w-full py-3 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold text-sm"
+              >
+                Continue →
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Step 3: Model */}
+        {step >= 3 && (
+          <div>
+            <StepLabel number={3} label="Choose a Model" done={!!selectedModel} />
             <ModelSelector
               selectedModelId={selectedModel?.id}
               onSelect={(m) => { setSelectedModel(m); setStep(3); }}
