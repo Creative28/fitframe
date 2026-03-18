@@ -24,7 +24,7 @@ export default function UploadZone({ onFileSelect }) {
     setUploadState('preparing');
     setProgress(0);
 
-    // 2. Compress on client (skip for HEIC — goes through Cloudinary)
+    // 2. Compress on client (skip for HEIC — backend handles conversion)
     const toUpload = isHeic(file) ? file : await compressImage(file);
 
     // 3. Start animated progress bar
@@ -35,15 +35,9 @@ export default function UploadZone({ onFileSelect }) {
       setProgress(fakeProgress);
     }, 200);
 
-    // 4. Upload
-    let file_url;
-    if (isHeic(file)) {
-      const response = await base44.functions.invoke('convertImage', { file });
-      file_url = response.data.file_url;
-    } else {
-      const result = await base44.integrations.Core.UploadFile({ file: toUpload });
-      file_url = result.file_url;
-    }
+    // 4. Route ALL uploads through backend to avoid client-side Cloudinary restrictions
+    const response = await base44.functions.invoke('convertImage', { file: toUpload });
+    const file_url = response.data.file_url;
 
     clearInterval(ticker);
     setProgress(100);
