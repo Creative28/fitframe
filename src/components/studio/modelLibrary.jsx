@@ -149,16 +149,7 @@ export const FEMALE_MODELS = [
     view_type: 'Upper Body',
     thumbnail_url: 'https://images.unsplash.com/photo-1578632292335-df3abbb0d586?w=400&h=550&fit=crop&crop=top',
   },
-  {
-    id: 'f-athletic-upper-1',
-    name: 'Serena',
-    gender: 'female',
-    body_type: 'Athletic',
-    style: 'Athletic',
-    age_group: 'Young Adult',
-    view_type: 'Upper Body',
-    thumbnail_url: 'https://images.unsplash.com/photo-1535743686920-55e4145369b9?w=400&h=550&fit=crop&crop=top',
-  },
+
 
   // ── LOWER BODY ────────────────────────────────────────────────────────────
 
