@@ -249,6 +249,7 @@ export default function Studio() {
             disabled={isGenerating || !garmentUrl || !selectedModel}
             className="w-full flex items-center justify-center gap-3 py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold hover:bg-[#2a2a4e] transition-colors disabled:opacity-50 min-h-[56px]"
           >
+
             <Sparkles size={20} className="text-[#E8B86D]" />
             Generate Photo
             {credits !== null && (
