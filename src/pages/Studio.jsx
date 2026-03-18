@@ -11,7 +11,7 @@ import GarmentPreview from '@/components/studio/GarmentPreview';
 import { Sparkles, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import GarmentSettings, { buildFitContext, GARMENT_TYPES } from '@/components/studio/GarmentSettings';
-import { getSuggestedModelId } from '@/components/studio/ModelSelector';
+import { getSuggestedModelId } from '@/components/studio/ModelSelector.jsx';
 
 const DEV_EMAIL = 'Nisan26ngcr@gmail.com';
 
