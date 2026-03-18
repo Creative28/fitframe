@@ -86,12 +86,17 @@ export default function Studio() {
       ? 'neutral warm wall background'
       : '';
 
+    const fitContext = buildFitContext(garmentSettings);
+
     const res = await base44.functions.invoke('fashnApi', {
       action: 'run',
       payload: {
         model_image: selectedModel.thumbnail_url,
         garment_image: garmentUrl,
-        category: garmentData.category,
+        category: resolvedCategory,
+        fit_context: fitContext,
+        garment_type: garmentSettings.garmentType,
+        fit_mode: garmentSettings.fitMode,
       },
     });
 
