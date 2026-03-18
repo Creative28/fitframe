@@ -47,7 +47,10 @@ export default function CustomerTryOn() {
     setProcessing(true);
 
     try {
-      const { file_url: customerFileUrl } = await base44.integrations.Core.UploadFile({ file });
+      // Upload via backend function to avoid auth requirement on integrations
+      const uploadRes = await base44.functions.invoke('uploadPublicFile', { file });
+      const customerFileUrl = uploadRes.data?.file_url;
+      if (!customerFileUrl) throw new Error('Upload failed');
 
       const run = await base44.functions.invoke('fashnApi', {
         action: 'run',
