@@ -231,19 +231,19 @@ export default function Studio() {
           </div>
         )}
 
-        {/* Step 3: Background */}
-        {step >= 3 && (
+        {/* Step 4: Background */}
+        {step >= 4 && (
           <div>
-            <StepLabel number={3} label="Select Background" done={step >= 4} />
+            <StepLabel number={4} label="Select Background" done={step >= 5} />
             <BackgroundSelector
               selected={selectedBackground}
-              onSelect={(bg) => { setSelectedBackground(bg); setStep(4); }}
+              onSelect={(bg) => { setSelectedBackground(bg); setStep(5); }}
             />
           </div>
         )}
 
-        {/* Step 4: Generate */}
-        {step >= 4 && (
+        {/* Step 5: Generate */}
+        {step >= 5 && (
           <button
             onClick={handleGenerate}
             disabled={isGenerating || !garmentUrl || !selectedModel}
