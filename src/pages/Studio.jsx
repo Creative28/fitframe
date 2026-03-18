@@ -58,10 +58,14 @@ export default function Studio() {
 
     setIsGenerating(true);
 
+    // Resolve category from garment type if set
+    const typeEntry = GARMENT_TYPES.find(t => t.value === garmentSettings.garmentType);
+    const resolvedCategory = typeEntry?.category || garmentData.category || 'tops';
+
     // Create garment record
     const garment = await base44.entities.Garment.create({
       original_image_url: garmentUrl,
-      category: garmentData.category,
+      category: resolvedCategory,
       color: garmentData.color,
     });
 
