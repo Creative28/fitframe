@@ -243,9 +243,9 @@ export default function Studio() {
         )}
 
         {/* Step 4: Background */}
-        {step >= 4 && (
+        {step >= 4 && step < 5 && (
           <div>
-            <StepLabel number={4} label="Select Background" done={step >= 5} />
+            <StepLabel number={4} label="Select Background" done={false} />
             <BackgroundSelector
               selected={selectedBackground}
               onSelect={(bg) => { setSelectedBackground(bg); setStep(5); }}
@@ -253,19 +253,26 @@ export default function Studio() {
           </div>
         )}
 
-        {/* Step 5: Generate */}
+        {/* Step 4 done indicator when on review */}
         {step >= 5 && (
-          <button
-            onClick={handleGenerate}
-            disabled={isGenerating || !garmentUrl || !selectedModel}
-            className="w-full flex items-center justify-center gap-3 py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold hover:bg-[#2a2a4e] transition-colors disabled:opacity-50 min-h-[56px]"
-          >
-            <Sparkles size={20} className="text-[#E8B86D]" />
-            Generate Photo
-            {credits !== null && (
-              <span className="text-xs font-dm text-white/60 ml-1">({credits} left)</span>
-            )}
-          </button>
+          <div>
+            <StepLabel number={4} label="Select Background" done={true} />
+          </div>
+        )}
+
+        {/* Step 5: Review & Confirm */}
+        {step >= 5 && (
+          <ReviewStep
+            garmentUrl={garmentUrl}
+            selectedModel={selectedModel}
+            selectedBackground={selectedBackground}
+            garmentSettings={garmentSettings}
+            credits={credits ?? 0}
+            onConfirm={handleGenerate}
+            onChangeModel={() => setStep(3)}
+            onChangeBackground={() => setStep(4)}
+            onBack={() => setStep(4)}
+          />
         )}
       </div>
     </div>
