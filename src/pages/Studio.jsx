@@ -257,8 +257,9 @@ export default function Studio() {
             <StepLabel number={3} label="Choose a Model" done={!!selectedModel} />
             <ModelSelector
               selectedModelId={selectedModel?.id}
+              selectedView={selectedView}
               suggestedModelId={getSuggestedModelId(garmentSettings.garmentType)}
-              onSelect={(m) => { setSelectedModel(m); setStep(4); }}
+              onSelect={(m) => { setSelectedModel(m); setSelectedView(m.selectedView || 'front'); setStep(4); }}
             />
           </div>
         )}
