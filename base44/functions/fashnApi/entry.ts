@@ -76,6 +76,28 @@ Deno.serve(async (req) => {
       }
       return Response.json({ status: data.status, output: data.output || [] });
 
+    } else if (action === "change_background") {
+      const { image, prompt } = payload;
+      const requestBody = {
+        model_name: "background-change",
+        inputs: { image, prompt }
+      };
+      console.log("[fashnApi] change_background payload:", JSON.stringify(requestBody));
+      const res = await fetch("https://api.fashn.ai/v1/run", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${FASHN_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+      });
+      const data = await res.json();
+      console.log("[fashnApi] change_background response:", res.status, JSON.stringify(data));
+      if (!res.ok) {
+        return Response.json({ error: data.message || data.detail || data.error || "FASHN API error" }, { status: res.status });
+      }
+      return Response.json({ prediction_id: data.id });
+
     } else if (action === "remove_background") {
       const { image_url } = payload;
       const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
