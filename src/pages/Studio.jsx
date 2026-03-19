@@ -85,14 +85,11 @@ export default function Studio() {
       status: 'pending',
     });
 
-    // Call FASHN API
-    const bgPrompt = selectedBackground === 'studio'
-      ? 'clean white studio background'
-      : selectedBackground === 'outdoor'
-      ? 'outdoor street lifestyle background'
-      : selectedBackground === 'neutral'
-      ? 'neutral warm wall background'
-      : '';
+    const BG_PROMPTS = {
+      studio: 'clean white photography studio background, professional lighting',
+      outdoor: 'outdoor lifestyle street background, natural light',
+      neutral: 'neutral warm grey wall background, soft light',
+    };
 
     const fitContext = buildFitContext(garmentSettings);
 
@@ -115,7 +112,7 @@ export default function Studio() {
       status: 'processing',
     });
 
-    // Poll for result — every 1s, up to 60 attempts (60s max)
+    // Poll for try-on result
     let result = null;
     for (let i = 0; i < 60; i++) {
       await new Promise(r => setTimeout(r, 1000));
@@ -131,7 +128,30 @@ export default function Studio() {
     }
 
     if (result?.output?.[0]) {
-      const resultUrl = result.output[0];
+      let resultUrl = result.output[0];
+
+      // Apply background change if a background was selected
+      if (selectedBackground !== 'none' && BG_PROMPTS[selectedBackground]) {
+        const bgRes = await base44.functions.invoke('fashnApi', {
+          action: 'change_background',
+          payload: { image: resultUrl, prompt: BG_PROMPTS[selectedBackground] },
+        });
+        const bgPredId = bgRes.data?.prediction_id;
+        if (bgPredId) {
+          for (let i = 0; i < 30; i++) {
+            await new Promise(r => setTimeout(r, 1000));
+            const poll = await base44.functions.invoke('fashnApi', {
+              action: 'status',
+              payload: { prediction_id: bgPredId },
+            });
+            if (poll.data?.status === 'completed' && poll.data?.output?.[0]) {
+              resultUrl = poll.data.output[0];
+              break;
+            }
+            if (poll.data?.status === 'failed') break;
+          }
+        }
+      }
       await base44.entities.Generation.update(generation.id, {
         result_image_url: resultUrl,
         status: 'completed',
