@@ -24,6 +24,7 @@ export default function Studio() {
   const [garmentUrl, setGarmentUrl] = useState(null);
   const [garmentData, setGarmentData] = useState({ category: 'tops', color: '' });
   const [selectedModel, setSelectedModel] = useState(null);
+  const [selectedView, setSelectedView] = useState('front');
   const [selectedBackground, setSelectedBackground] = useState('none');
   const [garmentSettings, setGarmentSettings] = useState({ garmentType: 'tshirt', fitMode: 'preserve' });
   const [isGenerating, setIsGenerating] = useState(false);
