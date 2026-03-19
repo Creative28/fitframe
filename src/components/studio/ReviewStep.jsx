@@ -169,7 +169,7 @@ export default function ReviewStep({
                   <img src={selectedModel.thumbnail_url} alt={selectedModel.name} className="w-full h-full object-cover object-top" />
                 </div>
                 <p className="text-xs font-dm text-gray-600 font-medium">{selectedModel.name}</p>
-                <p className="text-[11px] font-dm text-gray-400">{selectedModel.body_type} · {selectedModel.style}</p>
+                <p className="text-[11px] font-dm text-gray-400 capitalize">{selectedModel.body_type} · {selectedView} view</p>
               </div>
             </div>
 
