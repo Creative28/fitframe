@@ -19,6 +19,7 @@ const BG_PROMPTS = {
 export default function ReviewStep({
   garmentUrl,
   selectedModel,
+  selectedView,
   selectedBackground,
   garmentSettings,
   credits,
