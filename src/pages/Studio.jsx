@@ -287,6 +287,7 @@ export default function Studio() {
           <ReviewStep
             garmentUrl={garmentUrl}
             selectedModel={selectedModel}
+            selectedView={selectedView}
             selectedBackground={selectedBackground}
             garmentSettings={garmentSettings}
             credits={credits ?? 0}
