@@ -76,31 +76,30 @@ export default function Studio() {
       color: garmentData.color,
     });
 
+    // Build model prompt from config (add background to prompt if selected)
+    const bgPromptSuffix = {
+      studio: 'clean white photography studio background, professional lighting',
+      outdoor: 'outdoor lifestyle street background, natural light',
+      neutral: 'neutral warm grey wall background, soft studio light',
+    };
+    const modelPrompt = buildModelPrompt({
+      ...modelConfig,
+      background: selectedBackground !== 'none' ? selectedBackground : 'none',
+    });
+
     // Create generation record
     const generation = await base44.entities.Generation.create({
       garment_id: garment.id,
-      model_id: selectedModel.id,
+      model_id: 'ai-generated',
       background_type: selectedBackground,
       status: 'pending',
     });
 
-    const BG_PROMPTS = {
-      studio: 'clean white photography studio background, professional lighting',
-      outdoor: 'outdoor lifestyle street background, natural light',
-      neutral: 'neutral warm grey wall background, soft light',
-    };
-
-    const fitContext = buildFitContext(garmentSettings);
-
     const res = await base44.functions.invoke('fashnApi', {
-      action: 'run',
+      action: 'product_to_model',
       payload: {
-        model_image: selectedModel.thumbnail_url,
         garment_image: garmentUrl,
-        category: resolvedCategory,
-        fit_context: fitContext,
-        garment_type: garmentSettings.garmentType,
-        fit_mode: garmentSettings.fitMode,
+        prompt: modelPrompt,
       },
     });
 
