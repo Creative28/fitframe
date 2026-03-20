@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Sparkles } from 'lucide-react';
-import ModelSelector from '@/components/studio/ModelSelector';
+import ModelSelector from '@/components/studio/ModelSelector.jsx';
 import BackgroundSelector from '@/components/studio/BackgroundSelector';
 
 export default function GenerateDrawer({ garment, credits, onGenerate, onClose }) {
