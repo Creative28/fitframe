@@ -269,8 +269,7 @@ export default function Studio() {
         {step >= 5 && (
           <ReviewStep
             garmentUrl={garmentUrl}
-            selectedModel={selectedModel}
-            selectedView={selectedView}
+            modelConfig={modelConfig}
             selectedBackground={selectedBackground}
             garmentSettings={garmentSettings}
             credits={credits ?? 0}
