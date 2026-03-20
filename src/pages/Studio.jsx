@@ -231,13 +231,19 @@ export default function Studio() {
         {/* Step 3: Model */}
         {step >= 3 && (
           <div>
-            <StepLabel number={3} label="Choose a Model" done={!!selectedModel} />
+            <StepLabel number={3} label="Choose Model Style" done={!!modelConfig} />
             <ModelSelector
-              selectedModelId={selectedModel?.id}
-              selectedView={selectedView}
-              suggestedModelId={getSuggestedModelId(garmentSettings.garmentType)}
-              onSelect={(m) => { setSelectedModel(m); setSelectedView(m.selectedView || 'front'); setStep(4); }}
+              modelConfig={modelConfig || getSuggestedConfig(garmentSettings.garmentType)}
+              onSelect={(cfg) => { setModelConfig(cfg); }}
             />
+            {step === 3 && (
+              <button
+                onClick={() => setStep(4)}
+                className="mt-4 w-full py-3 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold text-sm"
+              >
+                Continue →
+              </button>
+            )}
           </div>
         )}
 
