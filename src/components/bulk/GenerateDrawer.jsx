@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { X, Sparkles } from 'lucide-react';
-import ModelSelector from '@/components/studio/ModelSelector.jsx';
+import ModelSelector, { getSuggestedConfig } from '@/components/studio/ModelSelector.jsx';
 import BackgroundSelector from '@/components/studio/BackgroundSelector';
 
 export default function GenerateDrawer({ garment, credits, onGenerate, onClose }) {
-  const [selectedModel, setSelectedModel] = useState(null);
+  const [modelConfig, setModelConfig] = useState(getSuggestedConfig());
   const [selectedBackground, setSelectedBackground] = useState('none');
-  const [tab, setTab] = useState('model'); // 'model' | 'background'
-
-  const canGenerate = !!selectedModel;
+  const [tab, setTab] = useState('model');
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40" onClick={onClose}>
@@ -38,7 +36,7 @@ export default function GenerateDrawer({ garment, credits, onGenerate, onClose }
               tab === 'model' ? 'bg-[#1A1A2E] text-white shadow-sm' : 'text-gray-500'
             }`}
           >
-            Model {selectedModel && '✓'}
+            Model Style
           </button>
           <button
             onClick={() => setTab('background')}
@@ -54,8 +52,8 @@ export default function GenerateDrawer({ garment, credits, onGenerate, onClose }
         <div className="overflow-y-auto flex-1 px-5 py-4">
           {tab === 'model' && (
             <ModelSelector
-              selectedModelId={selectedModel?.id}
-              onSelect={(m) => { setSelectedModel(m); setTab('background'); }}
+              modelConfig={modelConfig}
+              onSelect={(cfg) => setModelConfig(cfg)}
             />
           )}
           {tab === 'background' && (
@@ -69,16 +67,12 @@ export default function GenerateDrawer({ garment, credits, onGenerate, onClose }
         {/* Generate button */}
         <div className="px-5 py-4 border-t border-gray-100 flex-shrink-0">
           <button
-            onClick={() => onGenerate(garment, selectedModel, selectedBackground)}
-            disabled={!canGenerate}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair font-bold text-base disabled:opacity-40 min-h-[56px]"
+            onClick={() => onGenerate(garment, modelConfig, selectedBackground)}
+            className="w-full flex items-center justify-center gap-2 py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair font-bold text-base min-h-[56px]"
           >
             <Sparkles size={18} className="text-[#E8B86D]" />
-            Generate Photo
+            Generate Photo — 1 Credit
           </button>
-          {!selectedModel && (
-            <p className="text-xs text-center text-gray-400 font-dm mt-2">Please select a model first</p>
-          )}
         </div>
       </div>
     </div>
