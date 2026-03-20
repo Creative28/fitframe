@@ -57,7 +57,7 @@ export default function Studio() {
   };
 
   const handleGenerate = async () => {
-    if (!garmentUrl || !selectedModel) return;
+    if (!garmentUrl || !modelConfig) return;
     if (!isDevMode && credits !== null && credits <= 0) {
       setShowCreditsModal(true);
       return;
