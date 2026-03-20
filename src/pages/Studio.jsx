@@ -141,7 +141,8 @@ export default function Studio() {
         const bgPredId = bgRes.data?.prediction_id;
         if (bgPredId) {
           for (let i = 0; i < 20; i++) {
-            await new Promise(r => setTimeout(r, 3000));
+            const delay = i < 3 ? 2000 : 3000;
+            await new Promise(r => setTimeout(r, delay));
             const poll = await base44.functions.invoke('fashnApi', {
               action: 'status',
               payload: { prediction_id: bgPredId },
