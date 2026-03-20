@@ -32,20 +32,44 @@ Deno.serve(async (req) => {
       await base44.asServiceRole.entities.TryOnLink.update(tryon_link_id, { completions_count });
       return Response.json({ ok: true });
 
+    } else if (action === "product_to_model") {
+      // Use FASHN's product-to-model endpoint — generates an AI model from a prompt + garment
+      const { garment_image, prompt } = payload;
+      const requestBody = {
+        model_name: "product-to-model",
+        inputs: {
+          product_image: garment_image,
+          prompt: prompt || "Full body shot, woman, average build, standing upright, facing forward, clean white background, fashion photography",
+          aspect_ratio: "2:3",
+        }
+      };
+      console.log("[fashnApi] product_to_model payload:", JSON.stringify(requestBody));
+      const res = await fetch("https://api.fashn.ai/v1/run", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${FASHN_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+      });
+      const data = await res.json();
+      console.log("[fashnApi] product_to_model response:", res.status, JSON.stringify(data));
+      if (!res.ok) {
+        return Response.json({ error: data.message || data.detail || data.error || "FASHN API error" }, { status: res.status });
+      }
+      return Response.json({ prediction_id: data.id });
+
     } else if (action === "run") {
-      const { model_image, garment_image, category, garment_type, fit_mode, fit_context } = payload;
-
-      // Build cover_feet and other hints based on garment type
+      // Legacy tryon-v1.6 (kept for customer try-on flow)
+      const { model_image, garment_image, category, garment_type } = payload;
       const isHoodie = garment_type === 'hoodie';
-      const isPreserveFit = !fit_mode || fit_mode === 'preserve';
-
       const requestBody = {
         model_name: "tryon-v1.6",
         inputs: {
           model_image,
           garment_image,
-          category: category || "tops",
-          // For hoodies/oversized: use flat_lay_garment mode if available to better preserve shape
+          category: category || "auto",
+          mode: "quality",
           ...(isHoodie && { garment_photo_type: "flat-lay" }),
         }
       };
