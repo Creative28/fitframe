@@ -9,6 +9,7 @@ import GenerateDrawer from '@/components/bulk/GenerateDrawer';
 import { ImagePlus, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { compressImage, isHeic } from '@/lib/compressImage';
+import { buildModelPrompt } from '@/components/studio/ModelSelector.jsx';
 
 export default function BulkStudio() {
   const [garments, setGarments] = useState([]);
