@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import UploadZone from '@/components/studio/UploadZone';
-import ModelSelector, { getSuggestedModelId } from '@/components/studio/ModelSelector.jsx';
+import ModelSelector, { getSuggestedConfig, buildModelPrompt } from '@/components/studio/ModelSelector.jsx';
 import BackgroundSelector from '@/components/studio/BackgroundSelector';
 import GeneratingProgress from '@/components/studio/GeneratingProgress';
 import CreditsModal from '@/components/studio/CreditsModal';
