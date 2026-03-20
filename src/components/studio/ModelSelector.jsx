@@ -1,57 +1,104 @@
-import { useState } from 'react';
-import { Check } from 'lucide-react';
-import { MODEL_SETS, getSuggestedModelId } from './modelLibrary';
+import { useState, useEffect } from 'react';
+import { Check, Sparkles } from 'lucide-react';
 
-export { getSuggestedModelId };
+export { getSuggestedConfig };
 
-const VIEWS = ['front', 'side', 'back'];
-const VIEW_LABELS = { front: 'Front', side: 'Side', back: 'Back' };
-const VIEW_ICONS  = { front: '⬆️', side: '↗️', back: '⬇️' };
+// Build a FASHN product-to-model prompt from config
+export function buildModelPrompt(config) {
+  const { gender, bodyType, pose, background } = config;
+
+  const genderStr = gender === 'male' ? 'man' : 'woman';
+  const bodyStr = {
+    slim: 'slim build',
+    regular: 'average build',
+    plus: 'plus-size build',
+    athletic: 'athletic build',
+  }[bodyType] || 'average build';
+
+  const poseStr = {
+    front: 'standing upright, facing forward, arms relaxed at sides',
+    hands_on_hips: 'standing, hands on hips, confident pose',
+    walking: 'walking pose, natural movement',
+    casual: 'casual relaxed stance',
+  }[pose] || 'standing upright, facing forward';
+
+  const bgStr = {
+    studio: 'clean white studio background, professional lighting',
+    outdoor: 'outdoor lifestyle setting, natural light',
+    neutral: 'neutral grey wall background, soft studio light',
+    none: 'clean white background',
+  }[background] || 'clean white background';
+
+  return `Full body shot, ${genderStr}, ${bodyStr}, ${poseStr}, ${bgStr}, fashion photography, professional clothing model`;
+}
+
+function getSuggestedConfig(garmentType) {
+  return {
+    gender: 'female',
+    bodyType: 'regular',
+    pose: 'front',
+    background: 'none',
+  };
+}
+
+const GENDER_OPTIONS = [
+  { value: 'female', label: 'Women' },
+  { value: 'male', label: 'Men' },
+];
 
 const BODY_TYPES = [
-  { value: 'all',     label: 'All' },
-  { value: 'slim',    label: 'Slim' },
-  { value: 'regular', label: 'Regular' },
-  { value: 'plus',    label: 'Plus Size' },
+  { value: 'slim',     label: 'Slim',     emoji: '🧍' },
+  { value: 'regular',  label: 'Regular',  emoji: '🧍' },
+  { value: 'plus',     label: 'Plus Size',emoji: '🧍' },
+  { value: 'athletic', label: 'Athletic', emoji: '🧍' },
 ];
 
-const AGE_GROUPS = [
-  { value: 'all',   label: 'All Ages' },
-  { value: 'teen',  label: 'Teen' },
-  { value: 'adult', label: 'Adult' },
+const POSES = [
+  { value: 'front',         label: 'Classic Front',    desc: 'Arms at sides, forward facing' },
+  { value: 'hands_on_hips', label: 'Hands on Hips',   desc: 'Confident catalog pose' },
+  { value: 'walking',       label: 'Walking',          desc: 'Natural movement pose' },
+  { value: 'casual',        label: 'Casual',           desc: 'Relaxed everyday stance' },
 ];
 
-export default function ModelSelector({ selectedModelId, selectedView, onSelect, suggestedModelId }) {
-  const [gender, setGender]         = useState('female');
-  const [bodyFilter, setBodyFilter] = useState('all');
-  const [ageFilter, setAgeFilter]   = useState('all');
-
-  const filtered = MODEL_SETS.filter(m => {
-    if (m.gender !== gender) return false;
-    if (bodyFilter !== 'all' && m.body_type !== bodyFilter) return false;
-    if (ageFilter  !== 'all' && m.age_group !== ageFilter)  return false;
-    return true;
+export default function ModelSelector({ modelConfig, onSelect }) {
+  const [config, setConfig] = useState(modelConfig || {
+    gender: 'female',
+    bodyType: 'regular',
+    pose: 'front',
+    background: 'none',
   });
 
-  const handleSelectModel = (modelSet, view) => {
-    onSelect({
-      ...modelSet,
-      thumbnail_url: modelSet.views[view],
-      selectedView: view,
-    });
+  const update = (key, value) => {
+    const next = { ...config, [key]: value };
+    setConfig(next);
+    onSelect(next);
   };
 
-  return (
-    <div className="space-y-4">
+  // Auto-select on mount if not already set
+  useEffect(() => {
+    if (!modelConfig) onSelect(config);
+  }, []);
 
-      {/* Gender toggle */}
+  return (
+    <div className="space-y-5">
+
+      {/* Info banner */}
+      <div className="flex items-start gap-2.5 bg-[#1A1A2E]/5 border border-[#1A1A2E]/10 rounded-2xl p-3.5">
+        <Sparkles size={15} className="text-[#E8B86D] mt-0.5 shrink-0" />
+        <p className="text-xs font-dm text-gray-600 leading-relaxed">
+          <span className="font-semibold text-[#1A1A2E]">AI-generated models.</span>{' '}
+          FASHN creates a professional fashion model based on your selections — no stock photos, optimized for clothing.
+        </p>
+      </div>
+
+      {/* Gender */}
       <div className="flex bg-gray-100 rounded-xl p-1">
-        {[['female', 'Women'], ['male', 'Men']].map(([g, label]) => (
+        {GENDER_OPTIONS.map(({ value, label }) => (
           <button
-            key={g}
-            onClick={() => setGender(g)}
+            key={value}
+            onClick={() => update('gender', value)}
             className={`flex-1 py-2 rounded-lg text-sm font-dm font-semibold transition-all ${
-              gender === g ? 'bg-[#1A1A2E] text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
+              config.gender === value ? 'bg-[#1A1A2E] text-white shadow-sm' : 'text-gray-500'
             }`}
           >
             {label}
@@ -59,128 +106,53 @@ export default function ModelSelector({ selectedModelId, selectedView, onSelect,
         ))}
       </div>
 
-      {/* Body type chips */}
+      {/* Body Type */}
       <div>
-        <p className="text-[10px] font-dm font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Body Type</p>
-        <div className="flex gap-1.5 flex-wrap">
+        <p className="text-[10px] font-dm font-semibold text-gray-400 uppercase tracking-wide mb-2">Body Type</p>
+        <div className="grid grid-cols-2 gap-2">
           {BODY_TYPES.map(bt => (
             <button
               key={bt.value}
-              onClick={() => setBodyFilter(bt.value)}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-dm font-medium transition-colors ${
-                bodyFilter === bt.value
-                  ? 'bg-[#E8B86D] text-[#1A1A2E]'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              onClick={() => update('bodyType', bt.value)}
+              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border-2 text-left transition-all ${
+                config.bodyType === bt.value
+                  ? 'border-[#E8B86D] bg-[#E8B86D]/10'
+                  : 'border-gray-100 bg-white hover:border-gray-200'
               }`}
             >
-              {bt.label}
+              <span className={`text-sm font-dm font-semibold ${config.bodyType === bt.value ? 'text-[#1A1A2E]' : 'text-gray-700'}`}>
+                {bt.label}
+              </span>
+              {config.bodyType === bt.value && <Check size={13} className="text-[#E8B86D]" strokeWidth={3} />}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Age chips */}
+      {/* Pose */}
       <div>
-        <p className="text-[10px] font-dm font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Age Group</p>
-        <div className="flex gap-1.5">
-          {AGE_GROUPS.map(ag => (
+        <p className="text-[10px] font-dm font-semibold text-gray-400 uppercase tracking-wide mb-2">Model Pose</p>
+        <div className="flex flex-col gap-2">
+          {POSES.map(p => (
             <button
-              key={ag.value}
-              onClick={() => setAgeFilter(ag.value)}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-dm font-medium transition-colors ${
-                ageFilter === ag.value
-                  ? 'bg-[#1A1A2E] text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              key={p.value}
+              onClick={() => update('pose', p.value)}
+              className={`flex items-center justify-between px-4 py-3 rounded-xl border-2 text-left transition-all ${
+                config.pose === p.value
+                  ? 'border-[#1A1A2E] bg-[#1A1A2E] text-white'
+                  : 'border-gray-100 bg-white text-gray-700 hover:border-gray-200'
               }`}
             >
-              {ag.label}
+              <div>
+                <p className="text-sm font-dm font-semibold">{p.label}</p>
+                <p className={`text-[11px] mt-0.5 ${config.pose === p.value ? 'text-white/60' : 'text-gray-400'}`}>{p.desc}</p>
+              </div>
+              {config.pose === p.value && <Check size={14} strokeWidth={3} />}
             </button>
           ))}
         </div>
       </div>
 
-      <p className="text-[11px] font-dm text-gray-400">
-        {filtered.length} model set{filtered.length !== 1 ? 's' : ''} · select a set and choose a view
-      </p>
-
-      {/* Model sets grid */}
-      {filtered.length === 0 ? (
-        <div className="text-center py-8 text-gray-400 font-dm text-sm">
-          No models match — try different filters.
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {filtered.map((modelSet) => {
-            const isSetSelected = selectedModelId === modelSet.id;
-
-            return (
-              <div
-                key={modelSet.id}
-                className={`rounded-2xl border-2 p-3 transition-all ${
-                  isSetSelected
-                    ? 'border-[#E8B86D] bg-[#E8B86D]/5'
-                    : 'border-gray-100 bg-white hover:border-gray-200'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2.5">
-                  <div>
-                    <p className="text-sm font-dm font-bold text-[#1A1A2E]">{modelSet.name}</p>
-                    <p className="text-[11px] font-dm text-gray-400 capitalize">
-                      {modelSet.body_type} · {modelSet.age_group} · {modelSet.gender}
-                    </p>
-                  </div>
-                  {isSetSelected && (
-                    <span className="flex items-center gap-1 text-[11px] font-dm font-semibold text-[#E8B86D] bg-[#E8B86D]/10 px-2 py-0.5 rounded-full">
-                      <Check size={9} strokeWidth={3} /> Selected
-                    </span>
-                  )}
-                </div>
-
-                {/* 3 view thumbnails */}
-                <div className="grid grid-cols-3 gap-2">
-                  {VIEWS.map((view) => {
-                    const isViewSelected = isSetSelected && selectedView === view;
-                    return (
-                      <button
-                        key={view}
-                        onClick={() => handleSelectModel(modelSet, view)}
-                        className={`flex flex-col gap-1 rounded-xl overflow-hidden border-2 transition-all ${
-                          isViewSelected
-                            ? 'border-[#E8B86D] scale-[1.03]'
-                            : 'border-transparent hover:border-gray-200'
-                        }`}
-                      >
-                        <div className="relative w-full bg-gray-100" style={{ aspectRatio: '2/3' }}>
-                          <img
-                            src={modelSet.views[view]}
-                            alt={`${modelSet.name} ${view}`}
-                            className="w-full h-full object-cover object-top"
-                            loading="lazy"
-                          />
-                          {isViewSelected && (
-                            <div className="absolute bottom-1.5 right-1.5 w-5 h-5 bg-[#E8B86D] rounded-full flex items-center justify-center shadow">
-                              <Check size={10} strokeWidth={3} className="text-white" />
-                            </div>
-                          )}
-                        </div>
-                        <p className={`text-[10px] font-dm font-semibold text-center pb-1 ${
-                          isViewSelected ? 'text-[#E8B86D]' : 'text-gray-400'
-                        }`}>
-                          {VIEW_ICONS[view]} {VIEW_LABELS[view]}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <p className="text-center text-xs text-gray-400 font-dm pt-1">
-        All views use the same model — consistent sizing across shots
-      </p>
     </div>
   );
 }
