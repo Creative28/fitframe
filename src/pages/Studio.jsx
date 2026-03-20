@@ -128,31 +128,8 @@ export default function Studio() {
     }
 
     if (result?.output?.[0]) {
-      let resultUrl = result.output[0];
+      const resultUrl = result.output[0];
 
-      // Apply background change if a background was selected
-      if (selectedBackground !== 'none' && BG_PROMPTS[selectedBackground]) {
-        const bgRes = await base44.functions.invoke('fashnApi', {
-          action: 'change_background',
-          payload: { image: resultUrl, prompt: BG_PROMPTS[selectedBackground] },
-        });
-        const bgPredId = bgRes.data?.prediction_id;
-        if (bgPredId) {
-          for (let i = 0; i < 20; i++) {
-            const delay = i < 3 ? 2000 : 3000;
-            await new Promise(r => setTimeout(r, delay));
-            const poll = await base44.functions.invoke('fashnApi', {
-              action: 'status',
-              payload: { prediction_id: bgPredId },
-            });
-            if (poll.data?.status === 'completed' && poll.data?.output?.[0]) {
-              resultUrl = poll.data.output[0];
-              break;
-            }
-            if (poll.data?.status === 'failed') break;
-          }
-        }
-      }
       await base44.entities.Generation.update(generation.id, {
         result_image_url: resultUrl,
         status: 'completed',
@@ -162,8 +139,8 @@ export default function Studio() {
       await base44.entities.Photo.create({
         garment_image_url: garmentUrl,
         generated_image_url: resultUrl,
-        model_id: selectedModel.id,
-        model_name: selectedModel.name,
+        model_id: 'ai-generated',
+        model_name: `${modelConfig.gender === 'male' ? 'Male' : 'Female'} · ${modelConfig.bodyType}`,
         background_type: selectedBackground,
         garment_id: garment.id,
         generation_id: generation.id,
