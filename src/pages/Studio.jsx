@@ -112,10 +112,12 @@ export default function Studio() {
       status: 'processing',
     });
 
-    // Poll for try-on result (longer intervals for mobile battery/background)
+    // Poll for try-on result — fast at first, then slower
     let result = null;
-    for (let i = 0; i < 40; i++) {
-      await new Promise(r => setTimeout(r, 3000));
+    const intervals = [2000, 2000, 2000, 3000, 3000, 3000, 4000, 4000, 5000, 5000];
+    for (let i = 0; i < 30; i++) {
+      const delay = intervals[Math.min(i, intervals.length - 1)];
+      await new Promise(r => setTimeout(r, delay));
       const poll = await base44.functions.invoke('fashnApi', {
         action: 'status',
         payload: { prediction_id: predictionId },
