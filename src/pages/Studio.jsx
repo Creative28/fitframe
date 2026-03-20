@@ -112,10 +112,10 @@ export default function Studio() {
       status: 'processing',
     });
 
-    // Poll for try-on result
+    // Poll for try-on result (longer intervals for mobile battery/background)
     let result = null;
-    for (let i = 0; i < 60; i++) {
-      await new Promise(r => setTimeout(r, 1000));
+    for (let i = 0; i < 40; i++) {
+      await new Promise(r => setTimeout(r, 3000));
       const poll = await base44.functions.invoke('fashnApi', {
         action: 'status',
         payload: { prediction_id: predictionId },
