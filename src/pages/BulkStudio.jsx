@@ -48,7 +48,7 @@ export default function BulkStudio() {
     if (selectedGarment?.id === id) setSelectedGarment(null);
   };
 
-  const handleGenerate = async (garment, model, background) => {
+  const handleGenerate = async (garment, modelConfig, background) => {
     if (credits !== null && credits <= 0) {
       setShowCreditsModal(true);
       return;
@@ -66,26 +66,25 @@ export default function BulkStudio() {
 
     const generation = await base44.entities.Generation.create({
       garment_id: garmentRecord.id,
-      model_id: model.id,
+      model_id: 'ai-generated',
       background_type: background,
       status: 'pending',
     });
 
+    const modelPrompt = buildModelPrompt({ ...modelConfig, background });
+
     const res = await base44.functions.invoke('fashnApi', {
-      action: 'run',
-      payload: {
-        model_image: model.thumbnail_url,
-        garment_image: garment.file_url,
-        category: 'tops',
-      },
+      action: 'product_to_model',
+      payload: { garment_image: garment.file_url, prompt: modelPrompt },
     });
 
     const predictionId = res.data?.prediction_id;
     await base44.entities.Generation.update(generation.id, { prediction_id: predictionId, status: 'processing' });
 
     let result = null;
-    for (let i = 0; i < 60; i++) {
-      await new Promise(r => setTimeout(r, 1000));
+    const intervals = [2000, 2000, 2000, 3000, 3000, 3000, 4000, 4000, 5000, 5000];
+    for (let i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, intervals[Math.min(i, intervals.length - 1)]));
       const poll = await base44.functions.invoke('fashnApi', {
         action: 'status',
         payload: { prediction_id: predictionId },
@@ -101,8 +100,8 @@ export default function BulkStudio() {
       await base44.entities.Photo.create({
         garment_image_url: garment.file_url,
         generated_image_url: resultUrl,
-        model_id: model.id,
-        model_name: model.name,
+        model_id: 'ai-generated',
+        model_name: `${modelConfig.gender === 'male' ? 'Male' : 'Female'} · ${modelConfig.bodyType}`,
         background_type: background,
         garment_id: garmentRecord.id,
         generation_id: generation.id,
