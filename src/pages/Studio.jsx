@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import UploadZone from '@/components/studio/UploadZone';
-import ModelSelector from '@/components/studio/ModelSelector.jsx';
+import ModelSelector, { getSuggestedModelId } from '@/components/studio/ModelSelector.jsx';
 import BackgroundSelector from '@/components/studio/BackgroundSelector';
 import GeneratingProgress from '@/components/studio/GeneratingProgress';
 import CreditsModal from '@/components/studio/CreditsModal';
@@ -11,7 +11,6 @@ import GarmentPreview from '@/components/studio/GarmentPreview';
 import { Sparkles, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import GarmentSettings, { buildFitContext, GARMENT_TYPES } from '@/components/studio/GarmentSettings';
-import ModelSelector, { getSuggestedModelId } from '@/components/studio/ModelSelector.jsx';
 import ReviewStep from '@/components/studio/ReviewStep';
 
 const DEV_EMAIL = 'Nisan26ngcr@gmail.com';
