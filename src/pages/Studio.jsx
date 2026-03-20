@@ -10,7 +10,7 @@ import CreditsModal from '@/components/studio/CreditsModal';
 import GarmentPreview from '@/components/studio/GarmentPreview';
 import { Sparkles, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import GarmentSettings, { buildFitContext, GARMENT_TYPES } from '@/components/studio/GarmentSettings';
+import GarmentSettings, { GARMENT_TYPES } from '@/components/studio/GarmentSettings';
 import ReviewStep from '@/components/studio/ReviewStep';
 
 const DEV_EMAIL = 'Nisan26ngcr@gmail.com';
