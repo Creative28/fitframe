@@ -74,11 +74,11 @@ export default function CustomerTryOn() {
       const predId = run.data?.prediction_id;
       if (!predId) throw new Error('No prediction ID');
 
-      // Poll
+      // Poll with adaptive intervals
       let resultImageUrl = null;
-      const start = Date.now();
-      while (Date.now() - start < 90000) {
-        await new Promise(r => setTimeout(r, 2000));
+      const intervals = [2000, 2000, 2000, 3000, 3000, 3000, 4000, 4000, 5000, 5000];
+      for (let i = 0; i < 25; i++) {
+        await new Promise(r => setTimeout(r, intervals[Math.min(i, intervals.length - 1)]));
         const statusRes = await base44.functions.invoke('fashnApi', {
           action: 'status',
           payload: { prediction_id: predId }
@@ -140,7 +140,7 @@ export default function CustomerTryOn() {
     <div className="min-h-screen bg-[#FAFAF8]">
       {/* Header */}
       <div className="px-4 py-4 flex items-center justify-between border-b border-gray-100 bg-white">
-        <span className="font-playfair text-xl font-bold text-[#1A1A2E]">FitFrame</span>
+        <span className="font-playfair text-xl font-bold text-[#1A1A2E]">Just Fit It</span>
         {sellerName && (
           <span className="text-xs font-dm text-gray-500">From: <span className="font-medium text-[#1A1A2E]">{sellerName}</span></span>
         )}

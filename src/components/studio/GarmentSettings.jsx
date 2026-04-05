@@ -1,7 +1,7 @@
 import { Info } from 'lucide-react';
 import { useState } from 'react';
 
-const GARMENT_TYPES = [
+export const GARMENT_TYPES = [
   { value: 'hoodie', label: '🧥 Hoodie / Sweatshirt', category: 'tops' },
   { value: 'tshirt', label: '👕 T-Shirt / Top', category: 'tops' },
   { value: 'jacket', label: '🧣 Jacket / Coat', category: 'tops' },
@@ -148,5 +148,3 @@ export function buildFitContext(settings) {
 
   return lines.join(' ');
 }
-
-export { GARMENT_TYPES };

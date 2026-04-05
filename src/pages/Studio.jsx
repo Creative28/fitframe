@@ -10,14 +10,16 @@ import CreditsModal from '@/components/studio/CreditsModal';
 import GarmentPreview from '@/components/studio/GarmentPreview';
 import { Sparkles, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import GarmentSettings, { GARMENT_TYPES } from '@/components/studio/GarmentSettings';
+import GarmentSettings, { GARMENT_TYPES, buildFitContext } from '@/components/studio/GarmentSettings';
 import ReviewStep from '@/components/studio/ReviewStep';
-
-const DEV_EMAIL = 'Nisan26ngcr@gmail.com';
+import { useCredits } from '@/hooks/useCredits';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function Studio() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // 1=upload, 2=model, 3=background, 4=generate
+  const { toast } = useToast();
+  const { credits, deduct } = useCredits();
+  const [step, setStep] = useState(1);
   const [garmentFile, setGarmentFile] = useState(null);
   const [isDevMode, setIsDevMode] = useState(false);
   const [garmentUrl, setGarmentUrl] = useState(null);
@@ -26,26 +28,12 @@ export default function Studio() {
   const [selectedBackground, setSelectedBackground] = useState('none');
   const [garmentSettings, setGarmentSettings] = useState({ garmentType: 'tshirt', fitMode: 'preserve' });
   const [isGenerating, setIsGenerating] = useState(false);
-  const [credits, setCredits] = useState(null);
   const [showCreditsModal, setShowCreditsModal] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(user => {
       if (user) {
-        if (user.email?.toLowerCase() === DEV_EMAIL.toLowerCase()) {
-          setIsDevMode(true);
-        }
-        const c = user.credits_remaining ?? 5;
-        setCredits(c);
-        // Grant signup bonus if first time
-        if (user.credits_remaining === undefined || user.credits_remaining === null) {
-          base44.auth.updateMe({ credits_remaining: 5 });
-          base44.entities.CreditTransaction.create({
-            amount: 5,
-            type: 'signup_bonus',
-            description: '5 free credits on signup',
-          });
-        }
+        setIsDevMode(user.role === 'admin' || user.is_dev === true);
       }
     }).catch(() => {});
   }, []);
@@ -58,7 +46,7 @@ export default function Studio() {
 
   const handleGenerate = async () => {
     if (!garmentUrl || !modelConfig) return;
-    if (!isDevMode && credits !== null && credits <= 0) {
+    if (!isDevMode && (credits ?? 0) <= 0) {
       setShowCreditsModal(true);
       return;
     }
@@ -76,16 +64,13 @@ export default function Studio() {
       color: garmentData.color,
     });
 
-    // Build model prompt from config (add background to prompt if selected)
-    const bgPromptSuffix = {
-      studio: 'clean white photography studio background, professional lighting',
-      outdoor: 'outdoor lifestyle street background, natural light',
-      neutral: 'neutral warm grey wall background, soft studio light',
-    };
-    const modelPrompt = buildModelPrompt({
+    // Build model prompt with fit context appended
+    const fitContext = buildFitContext(garmentSettings);
+    const basePrompt = buildModelPrompt({
       ...modelConfig,
       background: selectedBackground !== 'none' ? selectedBackground : 'none',
     });
+    const modelPrompt = fitContext ? `${basePrompt}. ${fitContext}` : basePrompt;
 
     // Create generation record
     const generation = await base44.entities.Generation.create({
@@ -148,23 +133,32 @@ export default function Studio() {
       });
 
       // Deduct credit (skip for dev mode)
-      if (credits !== null && !isDevMode) {
-        const newCredits = Math.max(0, credits - 1);
-        await base44.auth.updateMe({ credits_remaining: newCredits });
+      if (!isDevMode) {
+        await deduct(1);
         await base44.entities.CreditTransaction.create({
           amount: -1,
           type: 'generation',
           description: 'Model photo generation',
           generation_id: generation.id,
         });
-        setCredits(newCredits);
       }
+
+      // Update garment with result for Catalog
+      await base44.entities.Garment.update(garment.id, {
+        result_image_url: resultUrl,
+        display_category: GARMENT_TYPES.find(t => t.value === garmentSettings.garmentType)?.label || '',
+      });
 
       setIsGenerating(false);
       navigate(`/result/${generation.id}`);
     } else {
       await base44.entities.Generation.update(generation.id, { status: 'failed' });
       setIsGenerating(false);
+      toast({
+        title: 'Generation failed',
+        description: 'Try a cleaner flat-lay photo with good lighting.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -273,6 +267,7 @@ export default function Studio() {
             selectedBackground={selectedBackground}
             garmentSettings={garmentSettings}
             credits={credits ?? 0}
+
             onConfirm={handleGenerate}
             onChangeModel={() => setStep(3)}
             onChangeBackground={() => setStep(4)}

@@ -7,7 +7,7 @@ const CATEGORIES = [
   { value: 'one-pieces', label: 'One-Piece' },
 ];
 
-export default function GarmentPreview({ imageUrl, category, color, displayCategory, onCategoryChange, onColorChange }) {
+export default function GarmentPreview({ imageUrl, category, color, displayCategory, onCategoryChange, onColorChange, onReplace }) {
   const [editingColor, setEditingColor] = useState(false);
   const [colorInput, setColorInput] = useState(color || '');
 
@@ -69,6 +69,16 @@ export default function GarmentPreview({ imageUrl, category, color, displayCateg
           )}
         </div>
       </div>
+      {onReplace && (
+        <div className="px-4 pb-4">
+          <button
+            onClick={onReplace}
+            className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-dm text-gray-400 hover:border-gray-300 hover:text-gray-500 transition-colors"
+          >
+            Replace photo
+          </button>
+        </div>
+      )}
     </div>
   );
 }

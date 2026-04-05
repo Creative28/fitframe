@@ -1,15 +1,8 @@
-import { useEffect, useState } from 'react';
 import { Sparkles } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { useCredits } from '@/hooks/useCredits';
 
 export default function AppHeader({ title }) {
-  const [credits, setCredits] = useState(null);
-
-  useEffect(() => {
-    base44.auth.me().then(user => {
-      if (user) setCredits(user.credits_remaining ?? 5);
-    }).catch(() => {});
-  }, []);
+  const { credits } = useCredits();
 
   return (
     <header className="sticky top-0 z-40 bg-[#FAFAF8]/90 backdrop-blur-sm border-b border-gray-100">

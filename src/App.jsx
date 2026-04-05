@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import AppLayout from '@/components/layout/AppLayout';
 import { ChatProvider } from '@/lib/ChatContext';
 import ChatBubble from '@/components/chat/ChatBubble';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 // Pages
 import Landing from './pages/Landing';
@@ -66,16 +67,18 @@ const AuthenticatedApp = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <ChatProvider>
-          <Router>
-            <AuthenticatedApp />
-          </Router>
-          <Toaster />
-        </ChatProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <ChatProvider>
+            <Router>
+              <AuthenticatedApp />
+            </Router>
+            <Toaster />
+          </ChatProvider>
+        </QueryClientProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
 

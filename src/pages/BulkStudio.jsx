@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import GeneratingProgress from '@/components/studio/GeneratingProgress';
@@ -6,23 +6,22 @@ import CreditsModal from '@/components/studio/CreditsModal';
 import MultiUploadZone from '@/components/bulk/MultiUploadZone';
 import GarmentQueueCard from '@/components/bulk/GarmentQueueCard';
 import GenerateDrawer from '@/components/bulk/GenerateDrawer';
-import { ImagePlus, Layers } from 'lucide-react';
+import { ImagePlus, Layers, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { compressImage, isHeic } from '@/lib/compressImage';
 import { buildModelPrompt } from '@/components/studio/ModelSelector.jsx';
+import { useCredits } from '@/hooks/useCredits';
+import { useToast } from '@/components/ui/use-toast';
+
+const DEFAULT_MODEL_CONFIG = { gender: 'female', bodyType: 'regular', pose: 'front', background: 'none' };
 
 export default function BulkStudio() {
+  const { credits, deduct } = useCredits();
+  const { toast } = useToast();
   const [garments, setGarments] = useState([]);
   const [selectedGarment, setSelectedGarment] = useState(null);
   const [activeGeneratingId, setActiveGeneratingId] = useState(null);
-  const [credits, setCredits] = useState(null);
   const [showCreditsModal, setShowCreditsModal] = useState(false);
-
-  useEffect(() => {
-    base44.auth.me().then(user => {
-      if (user) setCredits(user.credits_remaining ?? 5);
-    }).catch(() => {});
-  }, []);
 
   // Called by MultiUploadZone:
   // - Initially with array of new items (uploadStatus: 'uploading', preview set)
@@ -48,8 +47,15 @@ export default function BulkStudio() {
     if (selectedGarment?.id === id) setSelectedGarment(null);
   };
 
+  const handleGenerateAll = async () => {
+    const pending = garments.filter(g => g.genStatus === 'pending' && g.uploadStatus === 'done');
+    for (const garment of pending) {
+      await handleGenerate(garment, DEFAULT_MODEL_CONFIG, 'none');
+    }
+  };
+
   const handleGenerate = async (garment, modelConfig, background) => {
-    if (credits !== null && credits <= 0) {
+    if ((credits ?? 0) <= 0) {
       setShowCreditsModal(true);
       return;
     }
@@ -108,14 +114,10 @@ export default function BulkStudio() {
         category: 'tops',
       });
 
-      if (credits !== null) {
-        const newCredits = Math.max(0, credits - 1);
-        await base44.auth.updateMe({ credits_remaining: newCredits });
-        await base44.entities.CreditTransaction.create({
-          amount: -1, type: 'generation', description: 'Bulk model photo generation', generation_id: generation.id,
-        });
-        setCredits(newCredits);
-      }
+      await deduct(1);
+      await base44.entities.CreditTransaction.create({
+        amount: -1, type: 'generation', description: 'Bulk model photo generation', generation_id: generation.id,
+      });
 
       setGarments(prev => prev.map(g =>
         g.id === garment.id ? { ...g, genStatus: 'completed', result_url: resultUrl } : g
@@ -125,11 +127,17 @@ export default function BulkStudio() {
       setGarments(prev => prev.map(g =>
         g.id === garment.id ? { ...g, genStatus: 'failed' } : g
       ));
+      toast({
+        title: 'Generation failed',
+        description: 'Try a cleaner flat-lay photo with good lighting.',
+        variant: 'destructive',
+      });
     }
 
     setActiveGeneratingId(null);
   };
 
+  const readyPendingCount = garments.filter(g => g.genStatus === 'pending' && g.uploadStatus === 'done').length;
   const pendingCount = garments.filter(g => g.genStatus === 'pending').length;
   const doneCount = garments.filter(g => g.genStatus === 'completed').length;
 
@@ -168,6 +176,16 @@ export default function BulkStudio() {
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-gray-300 inline-block" />{pendingCount} pending</span>
             </div>
           </div>
+        )}
+
+        {readyPendingCount > 1 && !activeGeneratingId && (
+          <button
+            onClick={handleGenerateAll}
+            className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#1A1A2E] text-white rounded-2xl font-playfair font-bold text-sm"
+          >
+            <Sparkles size={16} className="text-[#E8B86D]" />
+            Generate All Pending ({readyPendingCount} items) — {readyPendingCount} Credits
+          </button>
         )}
 
         {garments.length > 0 && (

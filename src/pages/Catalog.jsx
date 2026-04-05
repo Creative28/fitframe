@@ -8,7 +8,6 @@ export default function Catalog() {
   const navigate = useNavigate();
   const [garments, setGarments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [generations, setGenerations] = useState({});
 
   useEffect(() => {
     loadData();
@@ -20,14 +19,6 @@ export default function Catalog() {
       const user = await base44.auth.me();
       const gs = await base44.entities.Garment.filter({ created_by: user.email }, '-created_date', 50);
       setGarments(gs);
-
-      // Load one generation per garment
-      const genMap = {};
-      await Promise.all(gs.map(async (g) => {
-        const gens = await base44.entities.Generation.filter({ garment_id: g.id, status: 'completed' }, '-created_date', 1);
-        if (gens[0]) genMap[g.id] = gens[0];
-      }));
-      setGenerations(genMap);
     } catch (e) {
       console.error(e);
     } finally {
@@ -65,8 +56,7 @@ export default function Catalog() {
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {garments.map(garment => {
-              const gen = generations[garment.id];
-              const imageUrl = gen?.result_image_url || garment.processed_image_url || garment.original_image_url;
+              const imageUrl = garment.result_image_url || garment.processed_image_url || garment.original_image_url;
               return (
                 <div key={garment.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group">
                   <div className="relative aspect-[3/4] bg-gray-50">
