@@ -113,7 +113,16 @@ export default function Studio() {
     }
 
     if (result?.output?.[0]) {
-      const resultUrl = result.output[0];
+      // Re-upload to permanent storage so URLs never expire
+      let resultUrl = result.output[0];
+      try {
+        const blob = await fetch(resultUrl).then(r => r.blob());
+        const file = new File([blob], 'result.jpg', { type: 'image/jpeg' });
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        resultUrl = file_url;
+      } catch (e) {
+        console.warn('Failed to re-upload to permanent storage, using temp URL', e);
+      }
 
       await base44.entities.Generation.update(generation.id, {
         result_image_url: resultUrl,
@@ -143,7 +152,6 @@ export default function Studio() {
         });
       }
 
-      // Update garment with result for Catalog
       await base44.entities.Garment.update(garment.id, {
         result_image_url: resultUrl,
         display_category: GARMENT_TYPES.find(t => t.value === garmentSettings.garmentType)?.label || '',

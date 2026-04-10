@@ -100,7 +100,16 @@ export default function BulkStudio() {
     }
 
     if (result?.output?.[0]) {
-      const resultUrl = result.output[0];
+      // Re-upload to permanent storage so URLs never expire
+      let resultUrl = result.output[0];
+      try {
+        const blob = await fetch(resultUrl).then(r => r.blob());
+        const file = new File([blob], 'result.jpg', { type: 'image/jpeg' });
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        resultUrl = file_url;
+      } catch (e) {
+        console.warn('Failed to re-upload to permanent storage, using temp URL', e);
+      }
 
       await base44.entities.Generation.update(generation.id, { result_image_url: resultUrl, status: 'completed' });
       await base44.entities.Photo.create({
