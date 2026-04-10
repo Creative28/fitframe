@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
-import { LogOut, ChevronRight, Store, Bell } from 'lucide-react';
+import { LogOut, ChevronRight, Store, Bell, Trash2 } from 'lucide-react';
 import CreditsModal from '@/components/studio/CreditsModal';
 import TopUpModal from '@/components/studio/TopUpModal';
 import GenerationsCard from '@/components/account/GenerationsCard';
@@ -14,6 +14,8 @@ export default function Account() {
   const [saving, setSaving] = useState(false);
   const [showCreditsModal, setShowCreditsModal] = useState(false);
   const [showTopUpModal, setShowTopUpModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
@@ -176,6 +178,15 @@ export default function Account() {
           </div>
         </div>
 
+        {/* Delete Account */}
+        <button
+          onClick={() => setShowDeleteConfirm(true)}
+          className="flex items-center justify-center gap-2 w-full py-3.5 bg-white border border-red-200 text-red-500 rounded-2xl font-dm font-medium text-sm hover:bg-red-50"
+        >
+          <Trash2 size={16} />
+          Delete Account
+        </button>
+
         {/* Sign out */}
         <button
           onClick={() => base44.auth.logout()}
@@ -192,6 +203,45 @@ export default function Account() {
           onClose={() => setShowTopUpModal(false)}
           onSuccess={handleTopUpSuccess}
         />
+      )}
+
+      {/* Delete Account Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
+          <div className="bg-white rounded-3xl w-full max-w-sm p-6">
+            <div className="flex items-center justify-center w-14 h-14 bg-red-100 rounded-full mx-auto mb-4">
+              <Trash2 size={24} className="text-red-500" />
+            </div>
+            <h2 className="font-playfair text-xl font-bold text-[#1A1A2E] text-center mb-2">Delete Account?</h2>
+            <p className="text-sm font-dm text-gray-500 text-center mb-6">
+              This will permanently delete your account and all your data — photos, garments, and try-on links. This cannot be undone.
+            </p>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={async () => {
+                  setDeleting(true);
+                  try {
+                    await base44.auth.updateMe({ is_deleted: true, deleted_reason: 'user_requested' });
+                    base44.auth.logout();
+                  } catch (e) {
+                    console.error(e);
+                    setDeleting(false);
+                  }
+                }}
+                disabled={deleting}
+                className="w-full py-3.5 bg-red-500 text-white rounded-2xl font-dm font-semibold text-sm hover:bg-red-600 disabled:opacity-50"
+              >
+                {deleting ? 'Deleting…' : 'Yes, Delete My Account'}
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="w-full py-3.5 bg-gray-100 text-gray-700 rounded-2xl font-dm font-semibold text-sm"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

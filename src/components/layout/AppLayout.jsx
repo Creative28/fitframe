@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import BottomNav from './BottomNav';
 import ChatBubble from '@/components/chat/ChatBubble';
 import useProactiveChatTrigger from '@/hooks/useProactiveChatTrigger';
@@ -24,7 +25,17 @@ function AppLayoutInner() {
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
       <main className="max-w-lg mx-auto pb-20">
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.18, ease: 'easeInOut' }}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
       <BottomNav />
       <ChatBubble hasBottomNav={true} />

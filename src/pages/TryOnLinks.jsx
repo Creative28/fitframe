@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import { Link2, Eye, CheckCircle, Copy, ToggleLeft, ToggleRight, ExternalLink } from 'lucide-react';
@@ -7,6 +7,9 @@ export default function TryOnLinks() {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState(null);
+  const [pullY, setPullY] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const touchStartY = useRef(null);
 
   useEffect(() => {
     loadLinks();
@@ -37,8 +40,36 @@ export default function TryOnLinks() {
     setLinks(prev => prev.map(l => l.id === link.id ? { ...l, is_active: !l.is_active } : l));
   };
 
+  const handleTouchStart = (e) => {
+    if (window.scrollY === 0) touchStartY.current = e.touches[0].clientY;
+  };
+  const handleTouchMove = (e) => {
+    if (touchStartY.current === null) return;
+    const delta = e.touches[0].clientY - touchStartY.current;
+    if (delta > 0 && !refreshing) setPullY(Math.min(delta * 0.4, 70));
+  };
+  const handleTouchEnd = async () => {
+    if (pullY > 50 && !refreshing) {
+      setRefreshing(true);
+      await loadLinks();
+      setRefreshing(false);
+    }
+    setPullY(0);
+    touchStartY.current = null;
+  };
+
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div
+      className="min-h-screen bg-[#FAFAF8]"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {(pullY > 0 || refreshing) && (
+        <div className="flex justify-center pt-3 pb-1 transition-all" style={{ height: pullY > 0 ? pullY : refreshing ? 48 : 0 }}>
+          <div className={`w-6 h-6 border-2 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full ${refreshing ? 'animate-spin' : ''}`} />
+        </div>
+      )}
       <AppHeader title="Try-On Links" />
       <div className="px-4 py-6">
         {loading ? (

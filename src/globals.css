@@ -64,6 +64,11 @@
     @apply bg-background text-foreground;
     font-family: 'DM Sans', sans-serif;
     background-color: #FAFAF8;
+    overscroll-behavior: none;
+  }
+  button, nav, [role="navigation"] {
+    user-select: none;
+    -webkit-user-select: none;
   }
 }
 
