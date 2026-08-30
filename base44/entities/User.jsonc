@@ -1,0 +1,57 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "user"
+    },
+    "business_name": {
+      "type": "string",
+      "description": "User's business or store name"
+    },
+    "credits_remaining": {
+      "type": "number",
+      "default": 5,
+      "description": "Monthly credits remaining (resets each billing cycle)"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "free",
+        "starter",
+        "growth",
+        "pro"
+      ],
+      "default": "free"
+    },
+    "receive_marketing_emails": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether user wants to receive marketing and announcement emails"
+    },
+    "monthly_credits_total": {
+      "type": "number",
+      "default": 5,
+      "description": "Total monthly credits for current plan"
+    },
+    "monthly_reset_date": {
+      "type": "string",
+      "description": "ISO date of next monthly reset"
+    },
+    "topup_credits": {
+      "type": "number",
+      "default": 0,
+      "description": "Purchased top-up credits (never expire, 12 months)"
+    },
+    "topup_expires_at": {
+      "type": "string",
+      "description": "ISO date when top-up credits expire"
+    }
+  },
+  "required": []
+}

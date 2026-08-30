@@ -1,0 +1,38 @@
+{
+  "name": "TryOnLink",
+  "type": "object",
+  "properties": {
+    "garment_id": {
+      "type": "string",
+      "description": "Reference to the Garment entity"
+    },
+    "unique_code": {
+      "type": "string",
+      "description": "Unique code for the public try-on URL"
+    },
+    "seller_store_url": {
+      "type": "string",
+      "description": "URL to the seller's store for this item"
+    },
+    "garment_image_url": {
+      "type": "string",
+      "description": "Image URL of the garment to display"
+    },
+    "views_count": {
+      "type": "number",
+      "default": 0
+    },
+    "completions_count": {
+      "type": "number",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "garment_id",
+    "unique_code"
+  ]
+}

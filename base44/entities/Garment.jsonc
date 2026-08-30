@@ -1,0 +1,38 @@
+{
+  "name": "Garment",
+  "type": "object",
+  "properties": {
+    "original_image_url": {
+      "type": "string",
+      "description": "URL of the original uploaded garment image"
+    },
+    "processed_image_url": {
+      "type": "string",
+      "description": "URL of the garment with background removed"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "tops",
+        "bottoms",
+        "one-pieces"
+      ],
+      "description": "Garment category for FASHN API"
+    },
+    "color": {
+      "type": "string",
+      "description": "Detected or user-set color of the garment"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name/title of the garment"
+    },
+    "display_category": {
+      "type": "string",
+      "description": "Human-readable category like Dress, T-shirt, etc."
+    }
+  },
+  "required": [
+    "original_image_url"
+  ]
+}

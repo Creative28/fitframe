@@ -1,0 +1,52 @@
+{
+  "name": "Photo",
+  "type": "object",
+  "properties": {
+    "garment_image_url": {
+      "type": "string",
+      "description": "URL of the garment used"
+    },
+    "generated_image_url": {
+      "type": "string",
+      "description": "URL of the generated model photo"
+    },
+    "generated_image_url_2": {
+      "type": "string",
+      "description": "URL of the second generated variation"
+    },
+    "model_id": {
+      "type": "string",
+      "description": "ID of the AI model used"
+    },
+    "model_name": {
+      "type": "string",
+      "description": "Name of the AI model used"
+    },
+    "background_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "studio",
+        "outdoor",
+        "neutral"
+      ],
+      "default": "none",
+      "description": "Background style used"
+    },
+    "garment_id": {
+      "type": "string",
+      "description": "Reference to the Garment entity"
+    },
+    "generation_id": {
+      "type": "string",
+      "description": "Reference to the Generation entity"
+    },
+    "category": {
+      "type": "string",
+      "description": "Garment category"
+    }
+  },
+  "required": [
+    "generated_image_url"
+  ]
+}

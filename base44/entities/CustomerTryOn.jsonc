@@ -1,0 +1,35 @@
+{
+  "name": "CustomerTryOn",
+  "type": "object",
+  "properties": {
+    "tryon_link_id": {
+      "type": "string",
+      "description": "Reference to the TryOnLink entity"
+    },
+    "customer_image_url": {
+      "type": "string",
+      "description": "URL of the customer's uploaded photo"
+    },
+    "result_image_url": {
+      "type": "string",
+      "description": "URL of the generated try-on result"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "prediction_id": {
+      "type": "string",
+      "description": "FASHN API prediction ID"
+    }
+  },
+  "required": [
+    "tryon_link_id"
+  ]
+}

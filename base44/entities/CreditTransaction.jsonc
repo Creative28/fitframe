@@ -1,0 +1,33 @@
+{
+  "name": "CreditTransaction",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "type": "number",
+      "description": "Credit amount (positive = added, negative = used)"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "signup_bonus",
+        "generation",
+        "refund",
+        "purchase",
+        "tryon"
+      ],
+      "description": "Type of transaction"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description"
+    },
+    "generation_id": {
+      "type": "string",
+      "description": "Associated generation ID if applicable"
+    }
+  },
+  "required": [
+    "amount",
+    "type"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "name": "Generation",
+  "type": "object",
+  "properties": {
+    "garment_id": {
+      "type": "string",
+      "description": "Reference to the Garment entity"
+    },
+    "model_id": {
+      "type": "string",
+      "description": "ID of the selected AI model"
+    },
+    "result_image_url": {
+      "type": "string",
+      "description": "URL of the first generated result"
+    },
+    "result_image_url_2": {
+      "type": "string",
+      "description": "URL of the second generated variation"
+    },
+    "background_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "white_studio",
+        "lifestyle_cafe",
+        "outdoor_street",
+        "marble",
+        "beach"
+      ],
+      "default": "none",
+      "description": "Background applied to the result"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "prediction_id": {
+      "type": "string",
+      "description": "FASHN API prediction ID for polling"
+    },
+    "prediction_id_2": {
+      "type": "string",
+      "description": "FASHN API prediction ID for second variation"
+    }
+  },
+  "required": [
+    "garment_id",
+    "model_id"
+  ]
+}

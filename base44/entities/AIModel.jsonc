@@ -1,0 +1,56 @@
+{
+  "name": "AIModel",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Display name of the model"
+    },
+    "thumbnail_url": {
+      "type": "string",
+      "description": "Thumbnail image URL"
+    },
+    "preview_url": {
+      "type": "string",
+      "description": "Full preview image URL"
+    },
+    "body_type": {
+      "type": "string",
+      "enum": [
+        "slim",
+        "average",
+        "curvy",
+        "plus",
+        "athletic"
+      ],
+      "description": "Body type category"
+    },
+    "skin_tone": {
+      "type": "string",
+      "enum": [
+        "light",
+        "medium",
+        "tan",
+        "brown",
+        "dark"
+      ],
+      "description": "Skin tone category"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "female",
+        "male"
+      ],
+      "default": "female"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "thumbnail_url"
+  ]
+}
