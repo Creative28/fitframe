@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
     const users = await base44.asServiceRole.entities.User.list();
     const recipients = users.filter(u => u.receive_marketing_emails !== false && u.email);
 
-    const APP_URL = 'https://preview-sandbox--69b7303524165a13c96d4537.base44.app';
+    const APP_URL = Deno.env.get('APP_URL') || 'https://preview-sandbox--69b7303524165a13c96d4537.base44.app';
 
     let sent = 0;
     let failed = 0;

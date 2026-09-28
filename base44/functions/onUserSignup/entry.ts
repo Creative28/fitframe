@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
 
     // Send welcome email
     const userName = data?.full_name || 'there';
-    const APP_URL = 'https://preview-sandbox--69b7303524165a13c96d4537.base44.app';
+    const APP_URL = Deno.env.get('APP_URL') || 'https://preview-sandbox--69b7303524165a13c96d4537.base44.app';
     const welcomeHtml = `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAFAF8;">
         <h1 style="font-family:Georgia,serif;font-size:28px;color:#1A1A2E;margin-bottom:8px;">Welcome to Just Fit It, ${userName}! 👋</h1>
