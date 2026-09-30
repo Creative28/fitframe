@@ -107,7 +107,7 @@ export default function GarmentQueueCard({ garment, onSelect, onDelete, isSelect
           )}
           <button
             onClick={(e) => { e.stopPropagation(); onDelete(garment.id); }}
-            className="flex items-center justify-center w-9 py-2 bg-red-50 text-red-400 rounded-xl min-h-[36px]"
+            className="flex items-center justify-center w-11 py-2 bg-red-50 text-red-400 rounded-xl min-h-[44px]"
           >
             <Trash2 size={12} />
           </button>

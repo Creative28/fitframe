@@ -38,13 +38,13 @@ export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] font-dm">
+    <div className="min-h-screen bg-brand-bg font-dm">
       {/* Nav */}
       <nav className="px-6 py-4 flex items-center justify-between max-w-5xl mx-auto">
-        <span className="font-playfair text-2xl font-bold text-[#1A1A2E]">Just Fit It</span>
+        <span className="font-playfair text-2xl font-bold text-brand-text">Just Fit It</span>
         <button
           onClick={() => base44?.auth?.redirectToLogin()}
-          className="px-4 py-2 text-sm font-medium text-[#1A1A2E] hover:underline"
+          className="px-4 py-2 text-sm font-medium text-brand-text hover:underline"
         >
           Sign in
         </button>
@@ -53,11 +53,11 @@ export default function Landing() {
       {/* Hero */}
       <section className="px-6 py-12 max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-[#E8B86D]/15 text-[#1A1A2E] px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <Sparkles size={14} className="text-[#E8B86D]" />
+          <div className="inline-flex items-center gap-2 bg-brand-accent/15 text-brand-text px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <Sparkles size={14} className="text-brand-accent" />
             5 free photos on signup — no card needed
           </div>
-          <h1 className="font-playfair text-4xl sm:text-6xl font-bold text-[#1A1A2E] leading-tight mb-4">
+          <h1 className="font-playfair text-4xl sm:text-6xl font-bold text-brand-text leading-tight mb-4">
             Turn your clothing photos into<br /><em>professional model shots</em><br />in seconds.
           </h1>
           <p className="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed mb-8">
@@ -65,7 +65,7 @@ export default function Landing() {
           </p>
           <button
             onClick={() => window.location.href = '/studio'}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold hover:bg-[#2a2a4e] transition-colors min-h-[56px]"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-brand-text text-white rounded-2xl font-playfair text-lg font-bold hover:bg-[#2a2a4e] transition-colors min-h-[56px]"
           >
             Try 5 photos free
             <ArrowRight size={20} />
@@ -80,17 +80,17 @@ export default function Landing() {
       {/* How it works */}
       <section className="px-6 py-16 bg-white">
         <div className="max-w-4xl mx-auto text-center mb-10">
-          <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-[#1A1A2E]">How it works</h2>
+          <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-brand-text">How it works</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {STEPS.map(({ icon: StepIcon, step, title, desc }) => (
             <div key={step} className="flex flex-col items-center text-center gap-4 p-6">
-              <div className="w-16 h-16 rounded-2xl bg-[#1A1A2E] flex items-center justify-center">
-                <StepIcon size={28} className="text-[#E8B86D]" />
+              <div className="w-16 h-16 rounded-2xl bg-brand-text flex items-center justify-center">
+                <StepIcon size={28} className="text-brand-accent" />
               </div>
               <div>
-                <p className="text-xs font-dm font-semibold text-[#E8B86D] tracking-widest mb-1">{step}</p>
-                <h3 className="font-playfair text-xl font-bold text-[#1A1A2E]">{title}</h3>
+                <p className="text-xs font-dm font-semibold text-brand-accent tracking-widest mb-1">{step}</p>
+                <h3 className="font-playfair text-xl font-bold text-brand-text">{title}</h3>
                 <p className="text-gray-500 text-sm mt-1">{desc}</p>
               </div>
             </div>
@@ -99,10 +99,10 @@ export default function Landing() {
       </section>
 
       {/* Customer Try-On feature */}
-      <section className="px-6 py-16 bg-[#FAFAF8]">
+      <section className="px-6 py-16 bg-brand-bg">
         <div className="max-w-4xl mx-auto">
           {/* Header card */}
-          <div className="bg-[#1A1A2E] rounded-3xl p-8 sm:p-10 text-white text-center mb-2">
+          <div className="bg-brand-text rounded-3xl p-8 sm:p-10 text-white text-center mb-2">
             <div className="text-4xl mb-4">🔗</div>
             <h2 className="font-playfair text-3xl font-bold mb-4">For your customers too</h2>
             <p className="text-white/70 text-lg max-w-lg mx-auto mb-6 leading-relaxed">
@@ -111,7 +111,7 @@ export default function Landing() {
             <div className="flex flex-wrap gap-3 justify-center text-sm font-dm">
               {['No app download', 'Works in any browser', 'Zero effort for buyer', 'Drives conversions'].map(f => (
                 <span key={f} className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full">
-                  <Check size={13} className="text-[#E8B86D]" />
+                  <Check size={13} className="text-brand-accent" />
                   {f}
                 </span>
               ))}
@@ -127,7 +127,7 @@ export default function Landing() {
       <section className="px-6 py-16 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-[#1A1A2E]">Simple pricing</h2>
+            <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-brand-text">Simple pricing</h2>
             <p className="text-gray-500 mt-2">Start for free. Upgrade when you're ready.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -135,31 +135,31 @@ export default function Landing() {
               <div
                 key={plan.name}
                 className={`relative rounded-2xl p-6 border-2 ${
-                  plan.popular ? 'border-[#E8B86D] bg-[#1A1A2E] text-white' : 'border-gray-100 bg-white'
+                  plan.popular ? 'border-brand-accent bg-brand-text text-white' : 'border-gray-100 bg-white'
                 }`}
               >
                 {plan.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#E8B86D] text-[#1A1A2E] text-xs font-semibold px-3 py-1 rounded-full font-dm">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-accent text-brand-text text-xs font-semibold px-3 py-1 rounded-full font-dm">
                     Most Popular
                   </span>
                 )}
-                <h3 className={`font-playfair text-xl font-bold mb-1 ${plan.popular ? 'text-white' : 'text-[#1A1A2E]'}`}>
+                <h3 className={`font-playfair text-xl font-bold mb-1 ${plan.popular ? 'text-white' : 'text-brand-text'}`}>
                   {plan.name}
                 </h3>
                 <div className="flex items-baseline gap-1 mb-4">
-                  <span className={`font-playfair text-4xl font-bold ${plan.popular ? 'text-white' : 'text-[#1A1A2E]'}`}>
+                  <span className={`font-playfair text-4xl font-bold ${plan.popular ? 'text-white' : 'text-brand-text'}`}>
                     ${plan.price}
                   </span>
                   <span className={`text-sm ${plan.popular ? 'text-white/60' : 'text-gray-400'}`}>/mo</span>
                 </div>
-                <div className={`flex items-center gap-1.5 mb-4 text-sm font-medium ${plan.popular ? 'text-[#E8B86D]' : 'text-[#E8B86D]'}`}>
+                <div className={`flex items-center gap-1.5 mb-4 text-sm font-medium ${plan.popular ? 'text-brand-accent' : 'text-brand-accent'}`}>
                   <Sparkles size={14} />
                   {plan.credits} credits/month
                 </div>
                 <ul className="space-y-2 mb-6">
                   {plan.features.map(f => (
                     <li key={f} className={`flex items-center gap-2 text-sm ${plan.popular ? 'text-white/80' : 'text-gray-500'}`}>
-                      <Check size={14} className="text-[#E8B86D] flex-shrink-0" />
+                      <Check size={14} className="text-brand-accent flex-shrink-0" />
                       {f}
                     </li>
                   ))}
@@ -168,8 +168,8 @@ export default function Landing() {
                   onClick={() => window.location.href = '/studio'}
                   className={`w-full py-3 rounded-xl font-dm font-semibold text-sm transition-colors ${
                     plan.popular
-                      ? 'bg-[#E8B86D] text-[#1A1A2E] hover:bg-[#d4a55e]'
-                      : 'bg-[#1A1A2E] text-white hover:bg-[#2a2a4e]'
+                      ? 'bg-brand-accent text-brand-text hover:bg-[#d4a55e]'
+                      : 'bg-brand-text text-white hover:bg-[#2a2a4e]'
                   }`}
                 >
                   Get started
@@ -183,7 +183,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="px-6 py-8 border-t border-gray-100 text-center">
-        <span className="font-playfair text-lg font-bold text-[#1A1A2E]">Just Fit It</span>
+        <span className="font-playfair text-lg font-bold text-brand-text">Just Fit It</span>
         <p className="text-sm text-gray-400 font-dm mt-1">AI fashion studio for sellers</p>
       </footer>
     </div>

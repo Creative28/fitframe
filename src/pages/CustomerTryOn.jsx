@@ -118,18 +118,18 @@ export default function CustomerTryOn() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (notFound || !link) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center px-6 text-center">
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center px-6 text-center">
         <div>
           <div className="text-6xl mb-4">🔍</div>
-          <h2 className="font-playfair text-2xl font-bold text-[#1A1A2E]">Link not found</h2>
+          <h2 className="font-playfair text-2xl font-bold text-brand-text">Link not found</h2>
           <p className="text-gray-400 font-dm mt-2">This try-on link may have expired or been removed.</p>
         </div>
       </div>
@@ -137,12 +137,12 @@ export default function CustomerTryOn() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="min-h-screen bg-brand-bg">
       {/* Header */}
       <div className="px-4 py-4 flex items-center justify-between border-b border-gray-100 bg-white">
-        <span className="font-playfair text-xl font-bold text-[#1A1A2E]">Just Fit It</span>
+        <span className="font-playfair text-xl font-bold text-brand-text">Just Fit It</span>
         {sellerName && (
-          <span className="text-xs font-dm text-gray-500">From: <span className="font-medium text-[#1A1A2E]">{sellerName}</span></span>
+          <span className="text-xs font-dm text-gray-500">From: <span className="font-medium text-brand-text">{sellerName}</span></span>
         )}
       </div>
 
@@ -162,7 +162,7 @@ export default function CustomerTryOn() {
               </div>
 
               <div className="text-center mb-8">
-                <h1 className="font-playfair text-3xl font-bold text-[#1A1A2E] leading-tight">
+                <h1 className="font-playfair text-3xl font-bold text-brand-text leading-tight">
                   See how this looks on <em>you</em>
                 </h1>
                 <p className="text-gray-500 font-dm mt-3 leading-relaxed">
@@ -172,7 +172,7 @@ export default function CustomerTryOn() {
 
               <button
                 onClick={() => setStep('upload')}
-                className="w-full py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold flex items-center justify-center gap-3"
+                className="w-full py-4 bg-brand-text text-white rounded-2xl font-playfair text-lg font-bold flex items-center justify-center gap-3"
               >
                 <Camera size={22} />
                 See how this looks on YOU →
@@ -183,7 +183,7 @@ export default function CustomerTryOn() {
                   href={link.seller_store_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-center mt-4 text-[#1A1A2E] font-dm text-sm underline"
+                  className="block text-center mt-4 text-brand-text font-dm text-sm underline"
                 >
                   Shop now without trying on
                 </a>
@@ -199,15 +199,15 @@ export default function CustomerTryOn() {
           {step === 'upload' && (
             <motion.div key="upload" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
               <div className="text-center mb-8">
-                <h2 className="font-playfair text-2xl font-bold text-[#1A1A2E]">Upload your photo</h2>
+                <h2 className="font-playfair text-2xl font-bold text-brand-text">Upload your photo</h2>
               </div>
 
               <div className="bg-white rounded-2xl p-6 mb-6 border border-gray-100">
-                <p className="font-dm font-semibold text-[#1A1A2E] mb-3 text-sm">For best results:</p>
+                <p className="font-dm font-semibold text-brand-text mb-3 text-sm">For best results:</p>
                 <ul className="space-y-2">
                   {['Stand straight, full body visible', 'Good, even lighting', 'Simple background', 'Fitted clothes (not baggy)'].map(tip => (
                     <li key={tip} className="flex items-center gap-2 text-sm text-gray-500 font-dm">
-                      <span className="text-[#E8B86D]">✓</span> {tip}
+                      <span className="text-brand-accent">✓</span> {tip}
                     </li>
                   ))}
                 </ul>
@@ -215,7 +215,7 @@ export default function CustomerTryOn() {
 
               <button
                 onClick={() => fileRef.current?.click()}
-                className="w-full py-5 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold flex items-center justify-center gap-3"
+                className="w-full py-5 bg-brand-text text-white rounded-2xl font-playfair text-lg font-bold flex items-center justify-center gap-3"
               >
                 <Camera size={22} />
                 Upload My Photo
@@ -247,15 +247,15 @@ export default function CustomerTryOn() {
                     <img src={customerImage} alt="You" className="w-32 h-40 object-cover rounded-2xl opacity-50" />
                   )}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="font-playfair text-2xl font-bold text-[#1A1A2E]">Finding your fit…</p>
+                  <p className="font-playfair text-2xl font-bold text-brand-text">Finding your fit…</p>
                   <p className="text-gray-400 font-dm text-sm mt-2">This takes about 10–15 seconds</p>
                 </div>
                 <div className="w-48 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#E8B86D] rounded-full animate-pulse" style={{ width: '60%' }} />
+                  <div className="h-full bg-brand-accent rounded-full animate-pulse" style={{ width: '60%' }} />
                 </div>
               </div>
             </motion.div>
@@ -264,7 +264,7 @@ export default function CustomerTryOn() {
           {step === 'result' && (
             <motion.div key="result" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
               <div className="text-center mb-4">
-                <p className="font-playfair text-2xl font-bold text-[#1A1A2E]">You look amazing! ✨</p>
+                <p className="font-playfair text-2xl font-bold text-brand-text">You look amazing! ✨</p>
               </div>
 
               <div className="bg-white rounded-3xl overflow-hidden shadow-lg mb-6">
@@ -281,14 +281,14 @@ export default function CustomerTryOn() {
                     href={link.seller_store_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold flex items-center justify-center gap-3"
+                    className="w-full py-4 bg-brand-text text-white rounded-2xl font-playfair text-lg font-bold flex items-center justify-center gap-3"
                   >
-                    <Heart size={20} className="text-[#E8B86D]" />
+                    <Heart size={20} className="text-brand-accent" />
                     I love it — Shop Now
                   </a>
                 ) : (
-                  <button className="w-full py-4 bg-[#1A1A2E] text-white rounded-2xl font-playfair text-lg font-bold flex items-center justify-center gap-3">
-                    <Heart size={20} className="text-[#E8B86D]" />
+                  <button className="w-full py-4 bg-brand-text text-white rounded-2xl font-playfair text-lg font-bold flex items-center justify-center gap-3">
+                    <Heart size={20} className="text-brand-accent" />
                     I love it — Shop Now
                   </button>
                 )}
@@ -302,7 +302,7 @@ export default function CustomerTryOn() {
                       alert('Link copied!');
                     }
                   }}
-                  className="w-full py-4 bg-white border-2 border-gray-200 text-[#1A1A2E] rounded-2xl font-dm font-semibold flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-white border-2 border-gray-200 text-brand-text rounded-2xl font-dm font-semibold flex items-center justify-center gap-3"
                 >
                   <Share2 size={18} />
                   Share this look

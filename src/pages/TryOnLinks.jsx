@@ -1,15 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import { Link2, Eye, CheckCircle, Copy, ToggleLeft, ToggleRight, ExternalLink } from 'lucide-react';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export default function TryOnLinks() {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState(null);
-  const [pullY, setPullY] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
-  const touchStartY = useRef(null);
+  const { pullY, refreshing, touchHandlers } = usePullToRefresh(() => loadLinks());
 
   useEffect(() => {
     loadLinks();
@@ -40,46 +39,26 @@ export default function TryOnLinks() {
     setLinks(prev => prev.map(l => l.id === link.id ? { ...l, is_active: !l.is_active } : l));
   };
 
-  const handleTouchStart = (e) => {
-    if (window.scrollY === 0) touchStartY.current = e.touches[0].clientY;
-  };
-  const handleTouchMove = (e) => {
-    if (touchStartY.current === null) return;
-    const delta = e.touches[0].clientY - touchStartY.current;
-    if (delta > 0 && !refreshing) setPullY(Math.min(delta * 0.4, 70));
-  };
-  const handleTouchEnd = async () => {
-    if (pullY > 50 && !refreshing) {
-      setRefreshing(true);
-      await loadLinks();
-      setRefreshing(false);
-    }
-    setPullY(0);
-    touchStartY.current = null;
-  };
-
   return (
     <div
-      className="min-h-screen bg-[#FAFAF8]"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      className="min-h-screen bg-brand-bg"
+      {...touchHandlers}
     >
       {(pullY > 0 || refreshing) && (
         <div className="flex justify-center pt-3 pb-1 transition-all" style={{ height: pullY > 0 ? pullY : refreshing ? 48 : 0 }}>
-          <div className={`w-6 h-6 border-2 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full ${refreshing ? 'animate-spin' : ''}`} />
+          <div className={`w-6 h-6 border-2 border-brand-accent/30 border-t-brand-accent rounded-full ${refreshing ? 'animate-spin' : ''}`} />
         </div>
       )}
       <AppHeader title="Try-On Links" />
       <div className="px-4 py-6">
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
           </div>
         ) : links.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
             <div className="text-6xl">🔗</div>
-            <h3 className="font-playfair text-xl font-bold text-[#1A1A2E]">No try-on links yet</h3>
+            <h3 className="font-playfair text-xl font-bold text-brand-text">No try-on links yet</h3>
             <p className="text-gray-400 font-dm text-sm max-w-xs">
               After generating a photo, tap "Create Customer Try-On Link" to let customers see how items look on them
             </p>
@@ -100,7 +79,7 @@ export default function TryOnLinks() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`w-2 h-2 rounded-full flex-shrink-0 ${link.is_active ? 'bg-green-400' : 'bg-gray-300'}`} />
-                      <p className="text-sm font-dm font-medium text-[#1A1A2E] truncate">
+                      <p className="text-sm font-dm font-medium text-brand-text truncate">
                         /try/{link.unique_code}
                       </p>
                     </div>
@@ -123,13 +102,13 @@ export default function TryOnLinks() {
                     href={`/try/${link.unique_code}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center p-2 bg-gray-50 rounded-xl hover:bg-gray-100"
+                    className="flex items-center justify-center p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 min-h-[44px]"
                   >
                     <ExternalLink size={16} className="text-gray-500" />
                   </a>
                   <button
                     onClick={() => toggleLink(link)}
-                    className="flex items-center justify-center p-2 bg-gray-50 rounded-xl hover:bg-gray-100"
+                    className="flex items-center justify-center p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 min-h-[44px]"
                   >
                     {link.is_active
                       ? <ToggleRight size={18} className="text-green-500" />

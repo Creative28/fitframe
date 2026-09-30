@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -11,25 +12,25 @@ import ChatBubble from '@/components/chat/ChatBubble';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 // Pages
-import Landing from './pages/Landing';
-import Studio from './pages/Studio';
-import Result from './pages/Result';
-import Catalog from './pages/Catalog';
-import TryOnLinks from './pages/TryOnLinks';
-import Account from './pages/Account';
-import CustomerTryOn from './pages/CustomerTryOn';
-import MyPhotos from './pages/MyPhotos.jsx';
-import BulkStudio from './pages/BulkStudio.jsx';
+const Landing = lazy(() => import('./pages/Landing'));
+const Studio = lazy(() => import('./pages/Studio'));
+const Result = lazy(() => import('./pages/Result'));
+const Catalog = lazy(() => import('./pages/Catalog'));
+const TryOnLinks = lazy(() => import('./pages/TryOnLinks'));
+const Account = lazy(() => import('./pages/Account'));
+const CustomerTryOn = lazy(() => import('./pages/CustomerTryOn'));
+const MyPhotos = lazy(() => import('./pages/MyPhotos.jsx'));
+const BulkStudio = lazy(() => import('./pages/BulkStudio.jsx'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#FAFAF8]">
+      <div className="fixed inset-0 flex items-center justify-center bg-brand-bg">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
-          <span className="font-playfair text-xl font-bold text-[#1A1A2E]">Just Fit It</span>
+          <div className="w-10 h-10 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
+          <span className="font-playfair text-xl font-bold text-brand-text">Just Fit It</span>
         </div>
       </div>
     );
@@ -43,6 +44,7 @@ const AuthenticatedApp = () => {
   }
 
   return (
+    <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center bg-brand-bg"><div className="w-8 h-8 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" /></div>}>
     <Routes>
       {/* Public pages */}
       <Route path="/" element={<><Landing /><ChatBubble /></>} />
@@ -62,6 +64,7 @@ const AuthenticatedApp = () => {
 
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </Suspense>
   );
 };
 

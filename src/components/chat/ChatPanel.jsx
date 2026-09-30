@@ -74,7 +74,7 @@ export default function ChatPanel({ isAuthenticated }) {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ overscrollBehavior: 'none' }}>
           {showStarters && (
             <div className="space-y-3">
               <div className="flex justify-start">
@@ -124,7 +124,7 @@ export default function ChatPanel({ isAuthenticated }) {
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 border-t border-gray-100 flex-shrink-0 flex gap-2 items-end pb-safe">
+        <div className="px-4 py-3 border-t border-gray-100 flex-shrink-0 flex gap-2 items-end" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
           <textarea
             ref={inputRef}
             value={input}

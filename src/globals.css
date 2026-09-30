@@ -31,6 +31,10 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --brand-bg: 60 15% 98%;
+    --brand-surface: 0 0% 100%;
+    --brand-text: 240 28% 14%;
+    --brand-accent: 37 73% 67%;
   }
 
   .dark {
@@ -53,6 +57,10 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+    --brand-bg: 240 28% 8%;
+    --brand-surface: 240 28% 14%;
+    --brand-text: 60 15% 98%;
+    --brand-accent: 37 73% 67%;
   }
 }
 
@@ -63,10 +71,10 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'DM Sans', sans-serif;
-    background-color: #FAFAF8;
+    background-color: hsl(var(--brand-bg));
     overscroll-behavior: none;
   }
-  button, nav, [role="navigation"] {
+  button, nav, [role="navigation"], [role="tab"], [role="button"], img, .no-select {
     user-select: none;
     -webkit-user-select: none;
   }

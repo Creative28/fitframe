@@ -151,7 +151,7 @@ export default function BulkStudio() {
   const doneCount = garments.filter(g => g.genStatus === 'completed').length;
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] pb-28">
+    <div className="min-h-screen bg-brand-bg pb-28">
       <AppHeader title="Bulk Studio" />
       <GeneratingProgress isGenerating={!!activeGeneratingId} />
       {showCreditsModal && <CreditsModal onClose={() => setShowCreditsModal(false)} />}
@@ -165,7 +165,7 @@ export default function BulkStudio() {
           >
             Single Item
           </Link>
-          <span className="flex-1 py-2 rounded-lg text-sm font-dm font-semibold text-center bg-[#1A1A2E] text-white shadow-sm flex items-center justify-center gap-1.5">
+          <span className="flex-1 py-2 rounded-lg text-sm font-dm font-semibold text-center bg-brand-text text-white shadow-sm flex items-center justify-center gap-1.5">
             <Layers size={14} />
             Bulk Upload
           </span>
@@ -177,7 +177,7 @@ export default function BulkStudio() {
 
         {garments.length > 0 && (
           <div className="flex items-center justify-between">
-            <p className="font-playfair text-lg font-bold text-[#1A1A2E]">
+            <p className="font-playfair text-lg font-bold text-brand-text">
               Queue <span className="text-gray-400 font-dm text-sm font-normal">({garments.length} items)</span>
             </p>
             <div className="flex items-center gap-3 text-xs font-dm text-gray-500">
@@ -190,9 +190,9 @@ export default function BulkStudio() {
         {readyPendingCount > 1 && !activeGeneratingId && (
           <button
             onClick={handleGenerateAll}
-            className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#1A1A2E] text-white rounded-2xl font-playfair font-bold text-sm"
+            className="w-full flex items-center justify-center gap-2 py-3.5 bg-brand-text text-white rounded-2xl font-playfair font-bold text-sm"
           >
-            <Sparkles size={16} className="text-[#E8B86D]" />
+            <Sparkles size={16} className="text-brand-accent" />
             Generate All Pending ({readyPendingCount} items) — {readyPendingCount} Credits
           </button>
         )}
@@ -214,7 +214,7 @@ export default function BulkStudio() {
 
             {/* Add more */}
             <div
-              className="border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#E8B86D]/50 transition-colors min-h-[160px]"
+              className="border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-brand-accent/50 transition-colors min-h-[160px]"
               onClick={() => {
                 const input = document.createElement('input');
                 input.type = 'file';

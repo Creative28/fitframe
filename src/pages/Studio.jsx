@@ -171,7 +171,7 @@ export default function Studio() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] pb-28">
+    <div className="min-h-screen bg-brand-bg pb-28">
       <AppHeader title="Studio" />
       <GeneratingProgress isGenerating={isGenerating} />
       {showCreditsModal && <CreditsModal onClose={() => setShowCreditsModal(false)} />}
@@ -179,7 +179,7 @@ export default function Studio() {
       {/* Mode switcher */}
       <div className="max-w-lg mx-auto px-4 pt-4">
         <div className="flex bg-gray-100 rounded-xl p-1">
-          <span className="flex-1 py-2 rounded-lg text-sm font-dm font-semibold text-center bg-[#1A1A2E] text-white shadow-sm">
+          <span className="flex-1 py-2 rounded-lg text-sm font-dm font-semibold text-center bg-brand-text text-white shadow-sm">
             Single Item
           </span>
           <Link
@@ -222,7 +222,7 @@ export default function Studio() {
             {step === 2 && (
               <button
                 onClick={() => setStep(3)}
-                className="mt-4 w-full py-3 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold text-sm"
+                className="mt-4 w-full py-3 bg-brand-text text-white rounded-2xl font-dm font-semibold text-sm"
               >
                 Continue →
               </button>
@@ -241,7 +241,7 @@ export default function Studio() {
             {step === 3 && (
               <button
                 onClick={() => setStep(4)}
-                className="mt-4 w-full py-3 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold text-sm"
+                className="mt-4 w-full py-3 bg-brand-text text-white rounded-2xl font-dm font-semibold text-sm"
               >
                 Continue →
               </button>
@@ -291,11 +291,11 @@ function StepLabel({ number, label, done }) {
   return (
     <div className="flex items-center gap-2 mb-3">
       <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold font-dm ${
-        done ? 'bg-[#E8B86D] text-[#1A1A2E]' : 'bg-[#1A1A2E] text-white'
+        done ? 'bg-brand-accent text-brand-text' : 'bg-brand-text text-white'
       }`}>
         {done ? '✓' : number}
       </div>
-      <span className="font-playfair text-lg font-semibold text-[#1A1A2E]">{label}</span>
+      <span className="font-playfair text-lg font-semibold text-brand-text">{label}</span>
     </div>
   );
 }

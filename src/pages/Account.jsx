@@ -5,6 +5,7 @@ import { LogOut, ChevronRight, Store, Bell, Trash2 } from 'lucide-react';
 import CreditsModal from '@/components/studio/CreditsModal';
 import TopUpModal from '@/components/studio/TopUpModal';
 import GenerationsCard from '@/components/account/GenerationsCard';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export default function Account() {
   const [user, setUser] = useState(null);
@@ -17,6 +18,7 @@ export default function Account() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [transactions, setTransactions] = useState([]);
+  const { pullY, refreshing, touchHandlers } = usePullToRefresh(() => loadUser());
 
   useEffect(() => {
     loadUser();
@@ -68,30 +70,35 @@ export default function Account() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8]">
+      <div className="min-h-screen bg-brand-bg">
         <AppHeader title="Account" />
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="min-h-screen bg-brand-bg" {...touchHandlers}>
+      {(pullY > 0 || refreshing) && (
+        <div className="flex justify-center pt-3 pb-1 transition-all" style={{ height: pullY > 0 ? pullY : refreshing ? 48 : 0 }}>
+          <div className={`w-6 h-6 border-2 border-brand-accent/30 border-t-brand-accent rounded-full ${refreshing ? 'animate-spin' : ''}`} />
+        </div>
+      )}
       <AppHeader title="Account" />
       <div className="px-4 py-6 flex flex-col gap-4">
 
         {/* Profile card */}
         <div className="bg-white rounded-2xl p-5 border border-gray-100">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-full bg-[#1A1A2E] flex items-center justify-center">
+            <div className="w-14 h-14 rounded-full bg-brand-text flex items-center justify-center">
               <span className="text-white font-playfair text-xl font-bold">
                 {user?.full_name?.[0] || user?.email?.[0]?.toUpperCase() || 'U'}
               </span>
             </div>
             <div>
-              <p className="font-playfair text-lg font-bold text-[#1A1A2E]">{user?.full_name || 'Seller'}</p>
+              <p className="font-playfair text-lg font-bold text-brand-text">{user?.full_name || 'Seller'}</p>
               <p className="text-sm text-gray-400 font-dm">{user?.email}</p>
             </div>
           </div>
@@ -107,7 +114,7 @@ export default function Account() {
               <button
                 onClick={saveBusiness}
                 disabled={saving}
-                className="px-4 py-2 bg-[#1A1A2E] text-white rounded-xl text-sm font-dm font-medium"
+                className="px-4 py-2 bg-brand-text text-white rounded-xl text-sm font-dm font-medium"
               >
                 {saving ? '…' : 'Save'}
               </button>
@@ -118,7 +125,7 @@ export default function Account() {
           ) : (
             <button
               onClick={() => setEditingBusiness(true)}
-              className="flex items-center gap-2 text-sm font-dm text-gray-500 hover:text-[#1A1A2E]"
+              className="flex items-center gap-2 text-sm font-dm text-gray-500 hover:text-brand-text"
             >
               <Store size={14} />
               {user?.business_name || 'Add your business name'}
@@ -137,7 +144,7 @@ export default function Account() {
         {/* Credit history */}
         {transactions.length > 0 && (
           <div className="bg-white rounded-2xl p-5 border border-gray-100">
-            <h3 className="font-playfair text-base font-bold text-[#1A1A2E] mb-3">Recent Activity</h3>
+            <h3 className="font-playfair text-base font-bold text-brand-text mb-3">Recent Activity</h3>
             <div className="flex flex-col gap-2">
               {transactions.map(txn => (
                 <div key={txn.id} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
@@ -153,7 +160,7 @@ export default function Account() {
 
         {/* Email Preferences */}
         <div className="bg-white rounded-2xl p-5 border border-gray-100">
-          <h3 className="font-playfair text-base font-bold text-[#1A1A2E] mb-3 flex items-center gap-2">
+          <h3 className="font-playfair text-base font-bold text-brand-text mb-3 flex items-center gap-2">
             <Bell size={16} /> Email Preferences
           </h3>
           <div className="flex items-center justify-between">
@@ -168,7 +175,7 @@ export default function Account() {
                 setUser(prev => ({ ...prev, receive_marketing_emails: newVal }));
               }}
               className={`relative w-12 h-6 rounded-full transition-colors ${
-                (user?.receive_marketing_emails ?? true) ? 'bg-[#1A1A2E]' : 'bg-gray-200'
+                (user?.receive_marketing_emails ?? true) ? 'bg-brand-text' : 'bg-gray-200'
               }`}
             >
               <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
@@ -212,7 +219,7 @@ export default function Account() {
             <div className="flex items-center justify-center w-14 h-14 bg-red-100 rounded-full mx-auto mb-4">
               <Trash2 size={24} className="text-red-500" />
             </div>
-            <h2 className="font-playfair text-xl font-bold text-[#1A1A2E] text-center mb-2">Delete Account?</h2>
+            <h2 className="font-playfair text-xl font-bold text-brand-text text-center mb-2">Delete Account?</h2>
             <p className="text-sm font-dm text-gray-500 text-center mb-6">
               This will permanently delete your account and all your data — photos, garments, and try-on links. This cannot be undone.
             </p>

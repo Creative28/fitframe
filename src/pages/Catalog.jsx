@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import { Plus, Tag, Trash2 } from 'lucide-react';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export default function Catalog() {
   const navigate = useNavigate();
   const [garments, setGarments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { pullY, refreshing, touchHandlers } = usePullToRefresh(() => loadData());
 
   useEffect(() => {
     loadData();
@@ -33,21 +35,26 @@ export default function Catalog() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="min-h-screen bg-brand-bg" {...touchHandlers}>
+      {(pullY > 0 || refreshing) && (
+        <div className="flex justify-center pt-3 pb-1 transition-all" style={{ height: pullY > 0 ? pullY : refreshing ? 48 : 0 }}>
+          <div className={`w-6 h-6 border-2 border-brand-accent/30 border-t-brand-accent rounded-full ${refreshing ? 'animate-spin' : ''}`} />
+        </div>
+      )}
       <AppHeader title="My Catalog" />
       <div className="px-4 py-6">
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
           </div>
         ) : garments.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
             <div className="text-6xl">👗</div>
-            <h3 className="font-playfair text-xl font-bold text-[#1A1A2E]">No items yet</h3>
+            <h3 className="font-playfair text-xl font-bold text-brand-text">No items yet</h3>
             <p className="text-gray-400 font-dm text-sm">Generate your first model photo and save it here</p>
             <button
               onClick={() => navigate('/studio')}
-              className="px-6 py-3 bg-[#1A1A2E] text-white rounded-full font-dm font-medium text-sm flex items-center gap-2"
+              className="px-6 py-3 bg-brand-text text-white rounded-full font-dm font-medium text-sm flex items-center gap-2"
             >
               <Plus size={16} />
               Create first photo
@@ -73,7 +80,7 @@ export default function Catalog() {
                     </button>
                   </div>
                   <div className="p-3">
-                    <p className="font-dm font-semibold text-[#1A1A2E] text-sm truncate">
+                    <p className="font-dm font-semibold text-brand-text text-sm truncate">
                       {garment.name || garment.display_category || 'Item'}
                     </p>
                     <div className="flex items-center gap-1.5 mt-1">
@@ -92,7 +99,7 @@ export default function Catalog() {
             })}
             <button
               onClick={() => navigate('/studio')}
-              className="bg-white border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-2 aspect-[3/4] hover:border-[#E8B86D]/50 transition-colors"
+              className="bg-white border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-2 aspect-[3/4] hover:border-brand-accent/50 transition-colors"
             >
               <Plus size={24} className="text-gray-300" />
               <span className="text-xs text-gray-300 font-dm">New photo</span>

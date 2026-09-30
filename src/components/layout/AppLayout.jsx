@@ -23,7 +23,7 @@ function AppLayoutInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="min-h-screen bg-brand-bg">
       <main className="max-w-lg mx-auto pb-20">
         <AnimatePresence mode="wait">
           <motion.div

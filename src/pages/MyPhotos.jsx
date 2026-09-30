@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AppHeader from '@/components/layout/AppHeader';
 import { Download, Trash2, RefreshCw, Link2, Plus, Check } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export default function MyPhotos() {
   const navigate = useNavigate();
@@ -12,9 +13,7 @@ export default function MyPhotos() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
   const [tryOnUrl, setTryOnUrl] = useState(null);
-  const [pullY, setPullY] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
-  const touchStartY = useRef(null);
+  const { pullY, refreshing, touchHandlers } = usePullToRefresh(() => loadPhotos());
 
   useEffect(() => {
     loadPhotos();
@@ -89,43 +88,23 @@ export default function MyPhotos() {
   };
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8]">
+      <div className="min-h-screen bg-brand-bg">
         <AppHeader title="My Photos" />
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
         </div>
       </div>
     );
   }
 
-  const handleTouchStart = (e) => {
-    if (window.scrollY === 0) touchStartY.current = e.touches[0].clientY;
-  };
-  const handleTouchMove = (e) => {
-    if (touchStartY.current === null) return;
-    const delta = e.touches[0].clientY - touchStartY.current;
-    if (delta > 0 && !refreshing) setPullY(Math.min(delta * 0.4, 70));
-  };
-  const handleTouchEnd = async () => {
-    if (pullY > 50 && !refreshing) {
-      setRefreshing(true);
-      await loadPhotos();
-      setRefreshing(false);
-    }
-    setPullY(0);
-    touchStartY.current = null;
-  };
-
   return (
     <div
-      className="min-h-screen bg-[#FAFAF8] pb-28"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      className="min-h-screen bg-brand-bg pb-28"
+      {...touchHandlers}
     >
       {(pullY > 0 || refreshing) && (
         <div className="flex justify-center pt-3 pb-1 transition-all" style={{ height: pullY > 0 ? pullY : refreshing ? 48 : 0 }}>
-          <div className={`w-6 h-6 border-2 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full ${refreshing ? 'animate-spin' : ''}`} />
+          <div className={`w-6 h-6 border-2 border-brand-accent/30 border-t-brand-accent rounded-full ${refreshing ? 'animate-spin' : ''}`} />
         </div>
       )}
       <AppHeader title="My Photos" />
@@ -134,11 +113,11 @@ export default function MyPhotos() {
         {photos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
             <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-4xl">📸</div>
-            <h3 className="font-playfair text-xl font-bold text-[#1A1A2E]">No photos yet</h3>
+            <h3 className="font-playfair text-xl font-bold text-brand-text">No photos yet</h3>
             <p className="text-gray-400 font-dm text-sm max-w-xs">Generate your first model photo in the Studio</p>
             <button
               onClick={() => navigate('/studio')}
-              className="flex items-center gap-2 px-6 py-3.5 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold text-sm min-h-[48px]"
+              className="flex items-center gap-2 px-6 py-3.5 bg-brand-text text-white rounded-2xl font-dm font-semibold text-sm min-h-[48px]"
             >
               <Plus size={16} />
               Create Your First Photo
@@ -168,7 +147,7 @@ export default function MyPhotos() {
       {tryOnUrl && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-end justify-center sm:items-center px-4">
           <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 pb-10">
-            <h2 className="font-playfair text-xl font-bold text-[#1A1A2E] mb-1">✅ Try-On Link Ready!</h2>
+            <h2 className="font-playfair text-xl font-bold text-brand-text mb-1">✅ Try-On Link Ready!</h2>
             <p className="text-sm font-dm text-gray-500 mb-4">Copy the link below and send it to your customer via WhatsApp, DM, or anywhere.</p>
             <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 mb-4">
               <span className="text-xs font-dm text-gray-700 break-all flex-1">{tryOnUrl}</span>
@@ -179,7 +158,7 @@ export default function MyPhotos() {
                   navigator.clipboard.writeText(tryOnUrl).catch(() => {});
                   toast({ title: 'Copied!', description: 'Link copied to clipboard' });
                 }}
-                className="w-full py-3.5 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold text-sm"
+                className="w-full py-3.5 bg-brand-text text-white rounded-2xl font-dm font-semibold text-sm"
               >
                 📋 Copy Link
               </button>
@@ -222,7 +201,7 @@ function PhotoCard({ photo, onDelete, onDownload, onTryOn, onRegenerate, isDelet
         />
         {isDeleting && (
           <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
-            <div className="w-6 h-6 border-2 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
           </div>
         )}
       </div>
@@ -231,14 +210,14 @@ function PhotoCard({ photo, onDelete, onDownload, onTryOn, onRegenerate, isDelet
         <div className="p-2 flex flex-col gap-1.5">
           <button
             onClick={() => onDownload(photo.generated_image_url)}
-            className="flex items-center gap-2 w-full px-3 py-2 bg-[#1A1A2E] text-white rounded-xl text-xs font-dm font-semibold min-h-[36px]"
+            className="flex items-center gap-2 w-full px-3 py-2 bg-brand-text text-white rounded-xl text-xs font-dm font-semibold min-h-[36px]"
           >
             <Download size={13} /> Download
           </button>
           <div className="grid grid-cols-2 gap-1.5">
             <button
               onClick={() => onTryOn(photo)}
-              className="flex items-center justify-center gap-1.5 py-2 bg-[#E8B86D]/10 text-[#1A1A2E] rounded-xl text-xs font-dm font-semibold min-h-[36px] border border-[#E8B86D]/30"
+              className="flex items-center justify-center gap-1.5 py-2 bg-brand-accent/10 text-brand-text rounded-xl text-xs font-dm font-semibold min-h-[36px] border border-brand-accent/30"
             >
               <Link2 size={11} /> Try-On
             </button>

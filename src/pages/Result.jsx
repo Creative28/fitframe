@@ -93,21 +93,21 @@ export default function Result() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#E8B86D]/30 border-t-[#E8B86D] rounded-full animate-spin" />
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!generation?.result_image_url) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8]">
+      <div className="min-h-screen bg-brand-bg">
         <AppHeader title="Result" />
         <div className="flex flex-col items-center justify-center py-20 gap-4 text-center px-4">
-          <p className="font-playfair text-xl text-[#1A1A2E]">Generation failed or not found.</p>
+          <p className="font-playfair text-xl text-brand-text">Generation failed or not found.</p>
           <button
             onClick={() => navigate('/studio')}
-            className="px-6 py-3 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold"
+            className="px-6 py-3 bg-brand-text text-white rounded-2xl font-dm font-semibold"
           >
             Try Again
           </button>
@@ -117,7 +117,7 @@ export default function Result() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] pb-28">
+    <div className="min-h-screen bg-brand-bg pb-28">
       <AppHeader title="Your Photo" />
 
       <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
@@ -134,7 +134,7 @@ export default function Result() {
         <div className="relative">
           <button
             onClick={() => setShowFormats(!showFormats)}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-[#1A1A2E] text-white rounded-2xl font-dm font-semibold text-base min-h-[56px]"
+            className="w-full flex items-center justify-center gap-2 py-4 bg-brand-text text-white rounded-2xl font-dm font-semibold text-base min-h-[56px]"
           >
             <Download size={18} />
             Download
@@ -146,7 +146,7 @@ export default function Result() {
                 <button
                   key={fmt.suffix}
                   onClick={() => { handleDownload(generation.result_image_url, fmt.suffix); setShowFormats(false); }}
-                  className="w-full text-left px-4 py-3 font-dm text-sm text-[#1A1A2E] hover:bg-gray-50 border-b border-gray-50 last:border-0"
+                  className="w-full text-left px-4 py-3 font-dm text-sm text-brand-text hover:bg-gray-50 border-b border-gray-50 last:border-0"
                 >
                   {fmt.label}
                 </button>
@@ -157,8 +157,8 @@ export default function Result() {
 
         {/* Write My Listing */}
         <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
-          <p className="font-playfair text-base font-bold text-[#1A1A2E] flex items-center gap-2">
-            <Sparkles size={16} className="text-[#E8B86D]" />
+          <p className="font-playfair text-base font-bold text-brand-text flex items-center gap-2">
+            <Sparkles size={16} className="text-brand-accent" />
             Write My Listing
           </p>
           <p className="text-xs font-dm text-gray-400">Pick your platform — we'll write the title, description and hashtags instantly.</p>
@@ -169,7 +169,7 @@ export default function Result() {
                 onClick={() => { setSelectedPlatform(platform); setListingContent(null); }}
                 className={`py-2 rounded-xl text-sm font-dm font-semibold border-2 transition-all ${
                   selectedPlatform === platform
-                    ? 'border-[#1A1A2E] bg-[#1A1A2E] text-white'
+                    ? 'border-brand-text bg-brand-text text-white'
                     : 'border-gray-100 bg-gray-50 text-gray-600'
                 }`}
               >
@@ -181,7 +181,7 @@ export default function Result() {
             <button
               onClick={handleWriteListing}
               disabled={isWriting}
-              className="w-full py-3 bg-[#E8B86D] text-[#1A1A2E] rounded-2xl font-dm font-semibold text-sm disabled:opacity-50"
+              className="w-full py-3 bg-brand-accent text-brand-text rounded-2xl font-dm font-semibold text-sm disabled:opacity-50"
             >
               {isWriting ? 'Writing your listing…' : `Write ${selectedPlatform} Listing ✨`}
             </button>
@@ -203,7 +203,7 @@ export default function Result() {
                         setTimeout(() => setCopiedField(null), 2000);
                       }}
                       className={`text-xs font-dm font-semibold px-2.5 py-1 rounded-full transition-colors ${
-                        copiedField === field ? 'bg-green-100 text-green-600' : 'bg-[#1A1A2E] text-white'
+                        copiedField === field ? 'bg-green-100 text-green-600' : 'bg-brand-text text-white'
                       }`}
                     >
                       {copiedField === field ? '✓ Copied!' : 'Copy'}
@@ -226,14 +226,14 @@ export default function Result() {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => navigate('/studio')}
-            className="flex items-center justify-center gap-2 py-3.5 bg-gray-100 text-[#1A1A2E] rounded-2xl font-dm font-semibold text-sm min-h-[48px]"
+            className="flex items-center justify-center gap-2 py-3.5 bg-gray-100 text-brand-text rounded-2xl font-dm font-semibold text-sm min-h-[48px]"
           >
             <RefreshCw size={16} />
             New Photo
           </button>
           <button
             onClick={() => navigate('/my-photos')}
-            className="flex items-center justify-center gap-2 py-3.5 bg-[#E8B86D]/10 text-[#1A1A2E] rounded-2xl font-dm font-semibold text-sm min-h-[48px] border border-[#E8B86D]/30"
+            className="flex items-center justify-center gap-2 py-3.5 bg-brand-accent/10 text-brand-text rounded-2xl font-dm font-semibold text-sm min-h-[48px] border border-brand-accent/30"
           >
             My Photos
           </button>

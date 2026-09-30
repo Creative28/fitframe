@@ -49,7 +49,7 @@ export default function GenerateDrawer({ garment, credits, onGenerate, onClose }
         </div>
 
         {/* Scrollable content */}
-        <div className="overflow-y-auto flex-1 px-5 py-4">
+        <div className="overflow-y-auto flex-1 px-5 py-4" style={{ overscrollBehavior: 'none' }}>
           {tab === 'model' && (
             <ModelSelector
               modelConfig={modelConfig}

@@ -49,8 +49,14 @@ module.exports = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			},
-  			sidebar: {
+  				},
+  				brand: {
+  					bg: 'hsl(var(--brand-bg))',
+  					surface: 'hsl(var(--brand-surface))',
+  					text: 'hsl(var(--brand-text))',
+  					accent: 'hsl(var(--brand-accent))'
+  				},
+  				sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
   				primary: 'hsl(var(--sidebar-primary))',
@@ -85,5 +91,5 @@ module.exports = {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate")]
 }
