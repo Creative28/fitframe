@@ -40,7 +40,7 @@ export default function GarmentQueueCard({ garment, onSelect, onDelete, isSelect
         {isUploading && (
           <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center gap-1.5">
             <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-            <p className="text-white text-[10px] font-dm font-medium">Uploading…</p>
+            <p className="text-white text-xs font-dm font-medium">Uploading…</p>
           </div>
         )}
 
@@ -73,15 +73,15 @@ export default function GarmentQueueCard({ garment, onSelect, onDelete, isSelect
       {/* Footer */}
       <div className="p-2 flex flex-col gap-1.5">
         {isUploading ? (
-          <span className="inline-flex items-center gap-1 text-[10px] font-dm font-semibold px-2 py-1 rounded-full self-start bg-blue-50 text-blue-500">
+          <span className="inline-flex items-center gap-1 text-xs font-dm font-semibold px-2 py-1 rounded-full self-start bg-blue-50 text-blue-500">
             <Loader2 size={10} className="animate-spin" /> Uploading…
           </span>
         ) : uploadError ? (
-          <span className="inline-flex items-center gap-1 text-[10px] font-dm font-semibold px-2 py-1 rounded-full self-start bg-red-100 text-red-500">
+          <span className="inline-flex items-center gap-1 text-xs font-dm font-semibold px-2 py-1 rounded-full self-start bg-red-100 text-red-500">
             <XCircle size={10} /> Upload failed
           </span>
         ) : (
-          <span className={`inline-flex items-center gap-1 text-[10px] font-dm font-semibold px-2 py-1 rounded-full self-start ${cfg.color}`}>
+          <span className={`inline-flex items-center gap-1 text-xs font-dm font-semibold px-2 py-1 rounded-full self-start ${cfg.color}`}>
             {Icon && <Icon size={10} />}
             {cfg.label}
           </span>
@@ -91,7 +91,7 @@ export default function GarmentQueueCard({ garment, onSelect, onDelete, isSelect
           {!isUploading && !uploadError && garment.genStatus !== 'processing' && garment.genStatus !== 'completed' && (
             <button
               onClick={() => onSelect(garment)}
-              className="flex-1 flex items-center justify-center gap-1 py-2 bg-[#1A1A2E] text-white rounded-xl text-xs font-dm font-semibold min-h-[36px]"
+              className="flex-1 flex items-center justify-center gap-1 py-2 bg-[#1A1A2E] text-white rounded-xl text-xs font-dm font-semibold min-h-[44px]"
             >
               <Sparkles size={11} className="text-[#E8B86D]" />
               Generate
@@ -100,13 +100,14 @@ export default function GarmentQueueCard({ garment, onSelect, onDelete, isSelect
           {garment.genStatus === 'completed' && (
             <button
               onClick={() => onSelect(garment)}
-              className="flex-1 flex items-center justify-center gap-1 py-2 bg-[#E8B86D]/10 text-[#1A1A2E] border border-[#E8B86D]/30 rounded-xl text-xs font-dm font-semibold min-h-[36px]"
+              className="flex-1 flex items-center justify-center gap-1 py-2 bg-[#E8B86D]/10 text-[#1A1A2E] border border-[#E8B86D]/30 rounded-xl text-xs font-dm font-semibold min-h-[44px]"
             >
               Regenerate
             </button>
           )}
           <button
             onClick={(e) => { e.stopPropagation(); onDelete(garment.id); }}
+            aria-label="Delete garment"
             className="flex items-center justify-center w-11 py-2 bg-red-50 text-red-400 rounded-xl min-h-[44px]"
           >
             <Trash2 size={12} />

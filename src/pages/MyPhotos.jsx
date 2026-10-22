@@ -37,10 +37,11 @@ export default function MyPhotos() {
 
   const handleDelete = async (photo) => {
     setDeletingId(photo.id);
+    setPhotos(prev => prev.filter(p => p.id !== photo.id));
     try {
       await base44.entities.Photo.delete(photo.id);
-      setPhotos(prev => prev.filter(p => p.id !== photo.id));
     } catch (e) {
+      setPhotos(prev => [photo, ...prev]);
       console.error(e);
     } finally {
       setDeletingId(null);
@@ -210,21 +211,21 @@ function PhotoCard({ photo, onDelete, onDownload, onTryOn, onRegenerate, isDelet
         <div className="p-2 flex flex-col gap-1.5">
           <button
             onClick={() => onDownload(photo.generated_image_url)}
-            className="flex items-center gap-2 w-full px-3 py-2 bg-brand-text text-white rounded-xl text-xs font-dm font-semibold min-h-[36px]"
+            className="flex items-center gap-2 w-full px-3 py-2 bg-brand-text text-white rounded-xl text-xs font-dm font-semibold min-h-[44px]"
           >
             <Download size={13} /> Download
           </button>
           <div className="grid grid-cols-2 gap-1.5">
             <button
               onClick={() => onTryOn(photo)}
-              className="flex items-center justify-center gap-1.5 py-2 bg-brand-accent/10 text-brand-text rounded-xl text-xs font-dm font-semibold min-h-[36px] border border-brand-accent/30"
+              className="flex items-center justify-center gap-1.5 py-2 bg-brand-accent/10 text-brand-text rounded-xl text-xs font-dm font-semibold min-h-[44px] border border-brand-accent/30"
             >
               <Link2 size={11} /> Try-On
             </button>
             <button
               onClick={() => onDelete(photo)}
               disabled={isDeleting}
-              className="flex items-center justify-center gap-1.5 py-2 bg-red-50 text-red-500 rounded-xl text-xs font-dm font-semibold min-h-[36px]"
+              className="flex items-center justify-center gap-1.5 py-2 bg-red-50 text-red-500 rounded-xl text-xs font-dm font-semibold min-h-[44px]"
             >
               <Trash2 size={11} /> Delete
             </button>

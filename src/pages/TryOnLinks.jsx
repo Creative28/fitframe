@@ -35,8 +35,14 @@ export default function TryOnLinks() {
   };
 
   const toggleLink = async (link) => {
-    await base44.entities.TryOnLink.update(link.id, { is_active: !link.is_active });
-    setLinks(prev => prev.map(l => l.id === link.id ? { ...l, is_active: !l.is_active } : l));
+    const prevIsActive = link.is_active;
+    setLinks(prev => prev.map(l => l.id === link.id ? { ...l, is_active: !prevIsActive } : l));
+    try {
+      await base44.entities.TryOnLink.update(link.id, { is_active: !prevIsActive });
+    } catch (e) {
+      setLinks(prev => prev.map(l => l.id === link.id ? { ...l, is_active: prevIsActive } : l));
+      console.error(e);
+    }
   };
 
   return (
@@ -93,7 +99,7 @@ export default function TryOnLinks() {
                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-50">
                   <button
                     onClick={() => copyLink(link.unique_code, link.id)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-gray-50 rounded-xl text-sm font-dm text-gray-600 hover:bg-gray-100"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-gray-50 rounded-xl text-sm font-dm text-gray-600 hover:bg-gray-100 min-h-[44px]"
                   >
                     {copiedId === link.id ? <CheckCircle size={14} className="text-green-500" /> : <Copy size={14} />}
                     {copiedId === link.id ? 'Copied!' : 'Copy link'}
@@ -102,12 +108,14 @@ export default function TryOnLinks() {
                     href={`/try/${link.unique_code}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Open try-on link"
                     className="flex items-center justify-center p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 min-h-[44px]"
                   >
                     <ExternalLink size={16} className="text-gray-500" />
                   </a>
                   <button
                     onClick={() => toggleLink(link)}
+                    aria-label={link.is_active ? 'Deactivate link' : 'Activate link'}
                     className="flex items-center justify-center p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 min-h-[44px]"
                   >
                     {link.is_active

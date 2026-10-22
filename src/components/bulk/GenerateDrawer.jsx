@@ -23,7 +23,7 @@ export default function GenerateDrawer({ garment, credits, onGenerate, onClose }
               <p className="text-xs font-dm text-gray-400">{credits} credits remaining</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full">
+          <button onClick={onClose} aria-label="Close" className="w-11 h-11 flex items-center justify-center bg-gray-100 rounded-full">
             <X size={16} />
           </button>
         </div>

@@ -74,7 +74,8 @@ export default function Catalog() {
                     )}
                     <button
                       onClick={() => handleDelete(garment.id)}
-                      className="absolute top-2 right-2 p-1.5 bg-white/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      aria-label="Delete item"
+                      className="absolute top-2 right-2 p-1.5 bg-white/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity min-h-[44px] min-w-[44px] flex items-center justify-center"
                     >
                       <Trash2 size={14} className="text-red-400" />
                     </button>
